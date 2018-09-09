@@ -1,16 +1,56 @@
 <template>
   <div class="map">
+
     <year-select/>
-    <div v-if="show">
-      <p v-if="pending">Looooding</p>
-      <l-map ref="map" style="height: 600px" :zoom="zoom" :center="center">
-        <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-        <v-marker-cluster :options="markerClusterOptions">
-          <l-geo-json :key="geoJson.features[0].properties.uid" v-for="geoJson in geoJsons" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
-        </v-marker-cluster>
-      </l-map>
+
+    <div class="input-group search-address">
+        <input id="search-address-input"
+               class="input-medium search-query form-control"
+               type="text"
+               onkeypress="{ ifEnter(locateAddress) }"
+               placeholder="{ t('Search for an address') }">
+        <span class="input-group-btn">
+            <button onclick="{ locateAddress }"
+                    class="btn btn-color-sec"
+                    type="button">
+                <img src="{ assets.lupa }">
+            </button>
+        </span>
     </div>
-    <p v-else>...............</p>
+
+    <div id="bigmap-container">
+        <div id="map-parent-container" class="{ map-big: opts.big }" if="{ opts.showmap }">
+            <div v-if="show">
+              <p v-if="pending">Looooding</p>
+              <l-map ref="map" id="map-container" style="height: 600px" :zoom="zoom" :center="center">
+                <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+                <v-marker-cluster :options="markerClusterOptions">
+                  <l-geo-json :key="geoJson.features[0].properties.uid" v-for="geoJson in geoJsons" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
+                </v-marker-cluster>
+              </l-map>
+            </div>
+            <p v-else>...............</p>
+
+            <div if="{ opts.big }" class="map-legend-container">
+                <div class="map-legend">
+                    <b class="darker-text">{ t("Map legend") }:</b>
+                    <div each="{ cat, i in categories }"
+                        class="capitalize map-category">
+                        <img src="{ assets[cat] }">
+                        { t(cat) }
+                    </div>
+                </div>
+            </div>
+            <div class="map-attribution">
+                <a target="_blank" href="https://www.openstreetmap.org/copyright/pt-BR">© contribuidores do OpenStreetMap</a>
+                <a target="_blank" href="http://mapbox.com">MB</a>
+            </div>
+            <div if="{ opts.big }"
+                 class="map-update-time">
+                { t('source') }: <a target="_blank" href="http://orcamento.sf.prefeitura.sp.gov.br/orcamento/execucao.php">Secretaria de Finanças</a>
+            </div>
+        </div>
+    </div>
   </div>
 </template>
 

@@ -10,10 +10,6 @@ export default {
   components: {
     StyledSelect
   },
-  data () {
-    return {
-    }
-  },
   computed: {
     options () {
       return this.years.map((x) => { return { key: x, value: x } })

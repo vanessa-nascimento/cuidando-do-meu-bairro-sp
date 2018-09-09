@@ -12,10 +12,10 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/2018'
+      redirect: '/2018/1'
     },
     {
-      path: '/:year',
+      path: '/:year/:page',
       name: 'home',
       components: {
         default: Home,

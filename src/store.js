@@ -33,14 +33,16 @@ const money = new Vapi({
   state: {
     yearPoints: {},
     years: [],
-    yearInfo: {},
-    pointInfo: {}
+    yearInfo: null,
+    pointInfo: {},
+    updates: [],
+    page: {}
   }
 }).get({
   action: 'getYearPoints',
   property: 'yearPoints',
   path: ({ year }) => `/minlist/${year}?state=1&capcor=1`,
-  onSuccess: (state, payload, axios) => {
+  onSuccess: (state, payload, axios, { params }) => {
     state.yearPoints = {
       type: 'FeatureCollection',
       features: payload.data.FeatureColletion
@@ -58,7 +60,7 @@ const money = new Vapi({
   property: 'yearInfo',
   path: ({ year }) => `/info/${year}`,
   onSuccess: (state, payload, axios) => {
-    state.yearInfo = payload.data
+    state.yearInfo = payload.data.data
   }
 }).get({
   action: 'getPointInfo',
@@ -67,6 +69,25 @@ const money = new Vapi({
   onSuccess: (state, payload, axios) => {
     state.pointInfo = payload.data.data[0]
   }
+}).get({
+  action: 'getMoneyPage',
+  property: 'page',
+  path: ({ year, page }) => `/list?year=${year}&page=${page}&per_page_num=25`,
+  onSuccess: (state, payload, axios) => {
+    payload.data.totalRows = payload.headers['x-total-count']
+    state.page = payload.data
+  }
+}).get({
+  action: 'getMoneyUpdates',
+  property: 'updates',
+  path: `/updates?per_page_num=20&has_key=state`,
+  onSuccess: (state, payload, axios) => {
+    // Substitute strings for Dates
+    for (let row of payload.data.data) {
+      row.date = new Date(row.date)
+    }
+    state.updates = payload.data.data
+  }
 }).getStore()
 
 // EsicLivre
@@ -74,7 +95,8 @@ const esic = new Vapi({
   axios: http,
   baseURL: baseUrls.esic,
   state: {
-    orgaos: []
+    orgaos: [],
+    updates: []
   }
 }).get({
   action: 'getOrgaos',
@@ -82,6 +104,71 @@ const esic = new Vapi({
   path: `/orgaos`,
   onSuccess: (state, payload, axios) => {
     state.years = payload.data.orgaos.sort().map((x) => { return { key: x, value: x } })
+  }
+}).get({
+  action: 'getPedidosUpdates',
+  property: 'updates',
+  path: `/messages`,
+  onSuccess: (state, payload, axios) => {
+    // Substitute strings for Dates
+    let pedidos = []
+    for (let row of payload.data.messages) {
+      row.date = new Date(row.date)
+      if (row.keywords[0] !== 'recuperado') {
+        pedidos.push({
+          date: row.date,
+          code: row.keywords[0],
+          pedido: row
+        })
+      }
+    }
+    state.updates = pedidos
+  }
+}).getStore()
+
+// Comments
+const comments = new Vapi({
+  axios: http,
+  baseURL: baseUrls.comments,
+  state: {
+    updates: []
+  }
+}).get({
+  action: 'getCommentsUpdates',
+  property: 'updates',
+  path: `/comment`,
+  onSuccess: (state, payload, axios) => {
+    // Substitute strings for Dates
+    let updates = payload.data.comments
+    for (let row of updates) {
+      row.created = new Date(row.created)
+      row.modified = new Date(row.modified)
+    }
+
+    let threads = []
+    // TODO pegar infos sobre os pontos para mostrar os assuntos
+    // falta só arrumar o triggerChange
+    // Group comments by thread
+    var threadsMap = updates.reduce((_threads, curr) => {
+      if (_threads[curr.thread_name]) {
+        _threads[curr.thread_name].push(curr)
+      } else {
+        let comments = [curr]
+        _threads[curr.thread_name] = comments
+        threads.push({
+          date: curr.created,
+          thread_name: curr.thread_name,
+          comments
+        })
+      }
+      return _threads
+    }, {})
+
+    // eslint-disable-next-line
+    let codes = Object.keys(threadsMap)
+    // this.triggerChange('multiPontinfo', {key: 'a', codes})
+
+    state.updates = threads
   }
 }).getStore()
 
@@ -112,8 +199,6 @@ const empenhos = new Vapi({
       codCategoria: 'categoria_despesa',
       codGrupo: 'grupo_despesa'
     }
-    console.log(pointInfo)
-    window.p = pointInfo
     return 'consultaEmpenhos?mesEmpenho=12&' +
       Object.keys(filters).map(k => k + '=' + pointInfo[filters[k]]).join('&')
   },
@@ -126,6 +211,7 @@ export default new Vuex.Store({
   modules: {
     money,
     esic,
-    empenhos
+    empenhos,
+    comments
   }
 })
