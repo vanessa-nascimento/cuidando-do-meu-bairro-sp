@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="subtitle">{ t('Recent Activities') }</h3>
+    <h3 class="subtitle">{{ $t('Recent Activities') }}</h3>
 
     <ul class="top-bar list-bare">
         <li v-for="(activity, i) of activities" :key="i">
@@ -14,7 +14,8 @@
 
                 <!-- If is a thread update -->
                 <div v-if="activity.comments">
-                    { t('comments_about', {'_num': activity.comments.length}) }
+                  <!-- TODO: _num abaixo -->
+                    {{ $t('comments_about', {'_num': activity.comments.length}) }}
                     <!--
                     <a v-if="multiPontinfo"
                         class="clickable"

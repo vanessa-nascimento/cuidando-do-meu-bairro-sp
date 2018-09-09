@@ -8,7 +8,7 @@
                class="input-medium search-query form-control"
                type="text"
                onkeypress="{ ifEnter(locateAddress) }"
-               placeholder="{ t('Search for an address') }">
+               :placeholder="$t('Search for an address')">
         <span class="input-group-btn">
             <button onclick="{ locateAddress }"
                     class="btn btn-color-sec"
@@ -33,11 +33,11 @@
 
             <div if="{ opts.big }" class="map-legend-container">
                 <div class="map-legend">
-                    <b class="darker-text">{ t("Map legend") }:</b>
+                    <b class="darker-text">{{ $t("Map legend") }}:</b>
                     <div each="{ cat, i in categories }"
                         class="capitalize map-category">
                         <img src="{ assets[cat] }">
-                        { t(cat) }
+                        {{ $t(cat) }}
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
             </div>
             <div if="{ opts.big }"
                  class="map-update-time">
-                { t('source') }: <a target="_blank" href="http://orcamento.sf.prefeitura.sp.gov.br/orcamento/execucao.php">Secretaria de Finanças</a>
+                {{ $t('source') }}: <a target="_blank" href="http://orcamento.sf.prefeitura.sp.gov.br/orcamento/execucao.php">Secretaria de Finanças</a>
             </div>
         </div>
     </div>

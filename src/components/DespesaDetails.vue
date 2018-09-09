@@ -2,7 +2,7 @@
   <div>
     <div class="top-bar orgao-box">
         <span class="block-decorator"/>
-        <span class="key">{ t('Accountable body') }:</span>
+        <span class="key">{{ $t('Accountable body') }}:</span>
         <span class="value">{{ pointInfo.orgao }}</span>
     </div>
 

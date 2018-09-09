@@ -4,12 +4,12 @@
             <div class="inline-block donut-group not-mapped">
                 <labeled-doughnut :color="assets.colorNM" :percentage="perNotMapped"/>
                 <p class="abs-number">{rowsNotMapped}</p>
-                <p>{ t('Not mapped') }</p>
+                <p>{{ $t('Not mapped') }}</p>
             </div>
             <div class="inline-block donut-group mapped">
                 <labeled-doughnut :color="assets.colorM" :percentage="perMapped"/>
                 <p class="abs-number">{rowsMapped}</p>
-                <p>{ t('Mapped') }</p>
+                <p>{{ $t('Mapped') }}</p>
             </div>
         </div>
 
@@ -18,17 +18,17 @@
                 <div v-for="(v, i) of values" :key="i" class="value-block">
                     <div class="icon-block">
                         <img :src="assets[v.name]">
-                        <span class="capitalize">{ t(v.name) }</span>
+                        <span class="capitalize">{{ $t(v.name) }}</span>
                     </div>
                     <div class="bar-block">
                         <hor-bar :color="assets.colorNM"
                               extraclass="not-mapped"
-                              :title="t('Not mapped')"
+                              :title="$t('Not mapped')"
                               :absolute="v.notMapped.abs"
                               :percentage="v.notMapped.per"/>
                         <hor-bar :color="assets.colorM"
                               extraclass="mapped"
-                              :title="t('Mapped')"
+                              :title="$t('Mapped')"
                               :absolute="v.mapped.abs"
                               :percentage="v.mapped.per"/>
                     </div>

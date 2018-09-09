@@ -18,7 +18,7 @@
             href="http://devcolab.each.usp.br/dadosorcamentarios"
             target="_blank">
                 <span class="download-arrow"/>
-                { t("Download table") }
+                {{ $t("Download table") }}
             </a>
         </div>
     </div>

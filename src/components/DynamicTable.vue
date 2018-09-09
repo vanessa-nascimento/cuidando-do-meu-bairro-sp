@@ -4,13 +4,13 @@
         <table class="table table-hover">
             <tr>
                 <th class="text-left relative">
-                    { t('description') }
+                    {{ $t('description') }}
                     <span class="table-header-mark"/>
                 </th>
-                <th>{ t('planejado') }</th>
-                <th>{ t('empenhado') }</th>
-                <th>{ t('liquidado') }</th>
-                <th class="text-left">{ t('body') }</th>
+                <th>{{ $t('planejado') }}</th>
+                <th>{{ $t('empenhado') }}</th>
+                <th>{{ $t('liquidado') }}</th>
+                <th class="text-left">{{ $t('body') }}</th>
             </tr>
             <tr v-for="(row, i) in pageData.data" :key="i">
                 class="clickable"
@@ -32,7 +32,7 @@
     <div class="text-right table-controls">
         <a onclick="{ fRoute(objPage(0)) }"
             v-if="currPage !== 0">
-            { t('first') }
+            {{ $t('first') }}
         </a>
         <a v-for="(num, i) in pageIndexes" :key="i"
             onclick="{ fRoute(objPage(num)) }"
@@ -42,7 +42,7 @@
         </a>
         <a onclick="{ fRoute(objPage(lastPage)) }"
             v-if="currPage !== lastPage">
-            { t('last') }
+            {{ $t('last') }}
         </a>
     </div>
   </div>
