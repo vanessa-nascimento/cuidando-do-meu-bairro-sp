@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="styled-select">
     <div class="inner"
          @click="toggleList"
          :aria-expanded="open"
@@ -38,7 +38,11 @@ export default {
   },
   computed: {
     displayedValue () {
-      return this.selectedValue ? this.selectedValue : this.internalSelectedValue
+      let key = this.selectedValue ? this.selectedValue : this.internalSelectedValue
+      for (let option of this.options) {
+        if (option.key === key) return option.value
+      }
+      return '...'
     }
   },
   methods: {

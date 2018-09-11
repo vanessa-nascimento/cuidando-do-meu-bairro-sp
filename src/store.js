@@ -26,6 +26,25 @@ const baseUrls = {
   empenhos: 'https://gatewayapi.prodam.sp.gov.br:443/financas/orcamento/sof/v2.1.0/'
 }
 
+// Authentication
+const auth = new Vapi({
+  axios: http,
+  baseURL: baseUrls.auth,
+  state: {
+    username: null
+  }
+// }).get({
+//   action: 'login',
+//   property: 'username',
+//   path: ({ year }) => `/minlist/${year}?state=1&capcor=1`,
+//   onSuccess: (state, payload, axios, { params }) => {
+//     state.yearPoints = {
+//       type: 'FeatureCollection',
+//       features: payload.data.FeatureColletion
+//     }
+//   }
+}).getStore()
+
 // Gastos Abertos
 const money = new Vapi({
   axios: http,
@@ -212,6 +231,7 @@ export default new Vuex.Store({
     money,
     esic,
     empenhos,
-    comments
+    comments,
+    auth
   }
 })

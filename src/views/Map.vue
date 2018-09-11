@@ -7,10 +7,11 @@
         <input id="search-address-input"
                class="input-medium search-query form-control"
                type="text"
-               onkeypress="{ ifEnter(locateAddress) }"
+               v-model="searchAddress"
+               @keypress.enter="locateAddress"
                :placeholder="$t('Search for an address')">
         <span class="input-group-btn">
-            <button onclick="{ locateAddress }"
+            <button @click="locateAddress"
                     class="btn btn-color-sec"
                     type="button">
                 <img :src="$assets.lupa">
@@ -23,7 +24,7 @@
             <div v-if="show">
               <p v-if="pending">Looooding</p>
               <l-map ref="map" id="map-container" style="height: 600px" :zoom="zoom" :center="center">
-                <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+                <l-tile-layer :url="url" :attribution="attribution" :id="id" :accessToken="accessToken"></l-tile-layer>
                 <v-marker-cluster :options="markerClusterOptions">
                   <l-geo-json :key="geoJson.features[0].properties.uid" v-for="geoJson in geoJsons" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
                 </v-marker-cluster>
@@ -56,9 +57,33 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import L from 'leaflet'
+import axios from 'axios'
 import { LMap, LTileLayer, LMarker, LGeoJson } from 'vue2-leaflet'
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
 import YearSelect from '@/components/YearSelect.vue'
+import { assets } from '@/assets'
+
+var greenIcon = L.icon({
+  iconUrl: assets.empenhado,
+  iconSize: [25, 41],
+  popupAnchor: [0, -10]
+})
+var blueIcon = L.icon({
+  iconUrl: assets.liquidado,
+  iconSize: [25, 41],
+  popupAnchor: [0, -10]
+})
+var redIcon = L.icon({
+  iconUrl: assets.planejado,
+  iconSize: [25, 41],
+  popupAnchor: [0, -10]
+})
+var icons = {
+  orcado: redIcon,
+  atualizado: redIcon,
+  empenhado: greenIcon,
+  liquidado: blueIcon
+}
 
 export default {
   name: 'map-despesas',
@@ -73,12 +98,16 @@ export default {
   data () {
     var self = this
     return {
+      searchAddress: '',
       show: false,
       categories: ['planejado', 'empenhado', 'liquidado'],
       zoom: 12,
       center: L.latLng(-23.58098, -46.61293),
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+      // url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      id: 'cuidando.nlj83mlb',
+      accessToken: 'pk.eyJ1IjoiY3VpZGFuZG8iLCJhIjoiY2lmandrYmEzNDBqbml1bHhlZzZtbWc0MSJ9.TZYl7sV3NHwSx5fk8JHqQg',
       markerClusterOptions: {
         maxClusterRadius: 100,
         spiderfyOnMaxZoom: true,
@@ -86,6 +115,9 @@ export default {
         zoomToBoundsOnClick: true
       },
       geoJsonOptions: {
+        pointToLayer (feature, latlng) {
+          return L.marker(latlng, { icon: icons[feature.properties.state] })
+        },
         onEachFeature (feature, layer) {
           layer.on('click', self.pointClicked)
         }
@@ -115,6 +147,18 @@ export default {
       let code = event.target.feature.properties.uid
       this.$refs.map.mapObject.panTo(event.latlng)
       this.$router.push({ name: 'despesa', params: { code } })
+    },
+    async locateAddress () {
+      let base = 'https://nominatim.openstreetmap.org/search/'
+      let query = '?format=json&limit=1&countrycodes=br&viewbox=-47.16,-23.36,-45.97,-23.98&bounded=1'
+      let url = base + this.searchAddress + query
+      let json = (await axios.get(url)).data
+
+      if (json) {
+        if (json.length) this.$refs.map.mapObject.setView([json[0].lat, json[0].lon], 16)
+        // TODO erro
+        // else msgs.addError('address_not_found')
+      }
     },
     ...mapActions([
       'getYearPoints'

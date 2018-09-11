@@ -1,6 +1,6 @@
 // Assets are converted on build to base64 strings, so in Browser they can
 // be used as variables, reducing request number.
-var assets = {
+export var assets = {
   logo: require('@/assets/logo.svg'),
   lupa: require('@/assets/lupa.svg'),
   planejado: require('@/assets/map/planejado.svg'),

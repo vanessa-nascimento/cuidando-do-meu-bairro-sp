@@ -1,5 +1,5 @@
 <template>
-  <styled-select :options="options" :selected-value="year" @change="selected"/>
+  <styled-select class="year-selector separated-caret" :options="options" :selected-value="parseInt(year)" @change="selected"/>
 </template>
 
 <script>

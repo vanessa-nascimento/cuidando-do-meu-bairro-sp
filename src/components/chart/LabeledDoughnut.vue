@@ -1,6 +1,6 @@
 <template>
   <div class="canvas-wrapper">
-    <canvas :id="canvasId" class="donut" :width="width" :height="height"/>
+    <canvas ref="canvas" class="donut" :width="width" :height="height"/>
     <span class="darker-text canvas-text">{{ percentage }}%</span>
   </div>
 </template>
@@ -13,18 +13,18 @@ export default {
     percentage: Number,
     color: String
   },
-  computed: {
-    build () {
-      let canvas = document.getElementById(this.canvasId)
-      if (canvas) drawDonut(canvas, this.color, this.percentage)
-      return true
+  mounted () {
+    drawDonut(this.$refs.canvas, this.color, this.percentage)
+  },
+  watch: {
+    percentage (newValue, oldValue) {
+      drawDonut(this.$refs.canvas, this.color, newValue)
     }
   },
   data () {
     return {
       width: 200,
-      height: 200,
-      canvasId: 'canvas' + this.color
+      height: 200
     }
   }
 }

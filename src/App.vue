@@ -1,10 +1,6 @@
 <template>
   <div id="app">
     <main-menu/>
-    <div id="nav">
-      <router-link :to="{ name: 'home', params: { year: 2018 }}">Home</router-link> |
-      <router-link :to="{ name: 'about'}">About</router-link>
-    </div>
     <keep-alive>
       <router-view name="map"></router-view>
     </keep-alive>
@@ -31,6 +27,7 @@ export default {
   methods: {
     ...mapActions([
       'getYearPoints',
+      'getYearInfo',
       'getPointInfo',
       'getEmpenhos',
       'getMoneyPage'
@@ -39,6 +36,7 @@ export default {
   watch: {
     year (newValue, oldValue) {
       this.getYearPoints({ params: { year: newValue } })
+      this.getYearInfo({ params: { year: newValue } })
     },
     code (newValue, oldValue) {
       if (newValue) this.getPointInfo({ params: { code: newValue } })

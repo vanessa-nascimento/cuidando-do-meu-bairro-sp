@@ -16,7 +16,7 @@
                 </button>
                 <router-link id="home-button"
                    class="navbar-brand"
-                   to="{ name: 'home' }">
+                   :to="{ name: 'home' }">
                     <img :src="$assets.logo">
                     <span class="beta-mark">BETA</span>
                 </router-link>
@@ -52,7 +52,7 @@
                     </a></li>
 
                     <li>
-                        <styled-select :options="langs" :selected-value="lang" @change="selectedLang"/>
+                        <styled-select :options="langs" :selected-value="$i18n.locale" @change="selectedLang"/>
                     </li>
                 </ul>
             </div>
@@ -83,7 +83,8 @@ export default {
       return `http://www.facebook.com/sharer.php?u=${page}`
     },
     ...mapState({
-      lang: state => state.route.query.lang
+      // lang: state => state.route.query.lang,
+      username: state => state.auth.username
     })
   },
   methods: {
@@ -97,6 +98,7 @@ export default {
     },
     selectedLang (lang) {
       this.closeExpanded()
+      this.$i18n.locale = lang
       // TODO route?
       // this.triggerChange('lang', lang)
     },

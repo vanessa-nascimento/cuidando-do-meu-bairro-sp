@@ -2,13 +2,13 @@
     <div v-if="yearInfo" class="row">
         <div class="col-lg-6 margin-bottom">
             <div class="inline-block donut-group not-mapped">
-                <labeled-doughnut :color="$assets.colorNM" :percentage="perNotMapped"/>
-                <p class="abs-number">{rowsNotMapped}</p>
+                <labeled-doughnut :color="$assets.patNM" :percentage="perNotMapped"/>
+                <p class="abs-number">{{rowsNotMapped}}</p>
                 <p>{{ $t('Not mapped') }}</p>
             </div>
             <div class="inline-block donut-group mapped">
-                <labeled-doughnut :color="$assets.colorM" :percentage="perMapped"/>
-                <p class="abs-number">{rowsMapped}</p>
+                <labeled-doughnut :color="$assets.patM" :percentage="perMapped"/>
+                <p class="abs-number">{{rowsMapped}}</p>
                 <p>{{ $t('Mapped') }}</p>
             </div>
         </div>
@@ -21,12 +21,12 @@
                         <span class="capitalize">{{ $t(v.name) }}</span>
                     </div>
                     <div class="bar-block">
-                        <hor-bar :color="$assets.colorNM"
+                        <hor-bar :color="$assets.patNM"
                               extraclass="not-mapped"
                               :title="$t('Not mapped')"
                               :absolute="v.notMapped.abs"
                               :percentage="v.notMapped.per"/>
-                        <hor-bar :color="$assets.colorM"
+                        <hor-bar :color="$assets.patM"
                               extraclass="mapped"
                               :title="$t('Mapped')"
                               :absolute="v.mapped.abs"
@@ -92,8 +92,6 @@ export default {
     })
   },
   methods: {
-    // TODO: translate!
-    t (a) { return a },
     ...mapActions([
       'getYearInfo'
     ])
