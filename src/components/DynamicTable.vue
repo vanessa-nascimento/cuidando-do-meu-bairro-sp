@@ -13,9 +13,10 @@
                 <th class="text-left">{{ $t('body') }}</th>
             </tr>
             <tr v-for="(row, i) in pageData.data" :key="i">
-                class="clickable"
-                onclick="{ fRoute('despesa', objCode(code)) }">
-                <td class="main-cell">{{ row.ds_projeto_atividade }}</td>
+                <td class="main-cell">
+                  <router-link :to="{ name: 'despesa', params: { code: row.code } }">
+                    {{ row.ds_projeto_atividade }}</router-link>
+                </td>
                 <td class="text-right">
                     {{ formatCur(calcPlanejado(row.sld_orcado_ano, row.vl_atualizado)) }}
                 </td>
@@ -30,20 +31,21 @@
         </table>
     </div>
     <div class="text-right table-controls">
-        <a onclick="{ fRoute(objPage(0)) }"
+        <router-link :to="{params: { page: 0 }}"
             v-if="currPage !== 0">
             {{ $t('first') }}
-        </a>
-        <a v-for="(num, i) in pageIndexes" :key="i"
-            onclick="{ fRoute(objPage(num)) }"
+        </router-link>
+        <router-link v-for="(num, i) in pageIndexes" :key="i"
+            :to="{params: { page: num }}"
             :class="{disabled: num == currPage }"
             role="button">
-            { num + 1 }
-        </a>
-        <a onclick="{ fRoute(objPage(lastPage)) }"
+            {{ num }}
+        </router-link>
+        <router-link
+            :to="{params: { page: lastPage }}"
             v-if="currPage !== lastPage">
             {{ $t('last') }}
-        </a>
+        </router-link>
     </div>
   </div>
 </template>
@@ -55,7 +57,7 @@ export default {
   name: 'dynamic-table',
   data () {
     return {
-      defaultPage: 1,
+      // defaultPage: 1,
       per_page_num: 25
     }
   },

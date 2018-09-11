@@ -63,7 +63,6 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { formatDate } from '@/utils'
-import assets from '@/assets'
 
 export default {
   name: 'recent-activities',
@@ -91,16 +90,16 @@ export default {
       if (item.data) {
         // Is a money update
         let currState = item.event === 'modified' ? item.data.state[1] : item.data.state
-        if (currState === 'empenhado') return assets.aEmp
-        if (currState === 'liquidado') return assets.aLiq
-        if (currState === 'orcado' || currState === 'atualizado') return assets.aPla
+        if (currState === 'empenhado') return this.$assets.aEmp
+        if (currState === 'liquidado') return this.$assets.aLiq
+        if (currState === 'orcado' || currState === 'atualizado') return this.$assets.aPla
       } else if (item.comments) {
         // Is a comments update
-        if (item.comments.length > 4) return assets.aComExtra
-        else return assets.aCom
+        if (item.comments.length > 4) return this.$assets.aComExtra
+        else return this.$assets.aCom
       } else if (item.pedido) {
         // Is a pergunta update
-        return assets.aPer
+        return this.$assets.aPer
       }
       return ''
     },

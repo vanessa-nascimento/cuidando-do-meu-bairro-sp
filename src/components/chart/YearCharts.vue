@@ -2,12 +2,12 @@
     <div v-if="yearInfo" class="row">
         <div class="col-lg-6 margin-bottom">
             <div class="inline-block donut-group not-mapped">
-                <labeled-doughnut :color="assets.colorNM" :percentage="perNotMapped"/>
+                <labeled-doughnut :color="$assets.colorNM" :percentage="perNotMapped"/>
                 <p class="abs-number">{rowsNotMapped}</p>
                 <p>{{ $t('Not mapped') }}</p>
             </div>
             <div class="inline-block donut-group mapped">
-                <labeled-doughnut :color="assets.colorM" :percentage="perMapped"/>
+                <labeled-doughnut :color="$assets.colorM" :percentage="perMapped"/>
                 <p class="abs-number">{rowsMapped}</p>
                 <p>{{ $t('Mapped') }}</p>
             </div>
@@ -17,16 +17,16 @@
             <div class="inline-block values-block">
                 <div v-for="(v, i) of values" :key="i" class="value-block">
                     <div class="icon-block">
-                        <img :src="assets[v.name]">
+                        <img :src="$assets[v.name]">
                         <span class="capitalize">{{ $t(v.name) }}</span>
                     </div>
                     <div class="bar-block">
-                        <hor-bar :color="assets.colorNM"
+                        <hor-bar :color="$assets.colorNM"
                               extraclass="not-mapped"
                               :title="$t('Not mapped')"
                               :absolute="v.notMapped.abs"
                               :percentage="v.notMapped.per"/>
-                        <hor-bar :color="assets.colorM"
+                        <hor-bar :color="$assets.colorM"
                               extraclass="mapped"
                               :title="$t('Mapped')"
                               :absolute="v.mapped.abs"
@@ -43,18 +43,12 @@ import { mapState, mapActions } from 'vuex'
 import { format } from '@/utils'
 import HorBar from '@/components/chart/HorBar.vue'
 import LabeledDoughnut from '@/components/chart/LabeledDoughnut.vue'
-import assets from '@/assets'
 
 export default {
   name: 'year-charts',
   components: {
     HorBar,
     LabeledDoughnut
-  },
-  data () {
-    return {
-      assets
-    }
   },
   mounted () {
     this.getYearInfo({ params: { year: this.year } })

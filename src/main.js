@@ -4,6 +4,7 @@ import { sync } from 'vuex-router-sync'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import Assets from './assets'
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
@@ -21,6 +22,8 @@ L.Icon.Default.mergeOptions({
 })
 
 Vue.config.productionTip = false
+
+Vue.use(Assets)
 
 sync(store, router)
 

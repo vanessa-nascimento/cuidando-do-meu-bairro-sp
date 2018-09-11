@@ -13,13 +13,13 @@
             <button onclick="{ locateAddress }"
                     class="btn btn-color-sec"
                     type="button">
-                <img src="{ assets.lupa }">
+                <img :src="$assets.lupa">
             </button>
         </span>
     </div>
 
     <div id="bigmap-container">
-        <div id="map-parent-container" class="{ map-big: opts.big }" if="{ opts.showmap }">
+        <div id="map-parent-container" :class="{ 'map-big': big }">
             <div v-if="show">
               <p v-if="pending">Looooding</p>
               <l-map ref="map" id="map-container" style="height: 600px" :zoom="zoom" :center="center">
@@ -31,12 +31,12 @@
             </div>
             <p v-else>...............</p>
 
-            <div if="{ opts.big }" class="map-legend-container">
+            <div v-if="big" class="map-legend-container">
                 <div class="map-legend">
                     <b class="darker-text">{{ $t("Map legend") }}:</b>
-                    <div each="{ cat, i in categories }"
+                    <div v-for="(cat, i) in categories" :key="i"
                         class="capitalize map-category">
-                        <img src="{ assets[cat] }">
+                        <img :src="$assets[cat]">
                         {{ $t(cat) }}
                     </div>
                 </div>
@@ -45,8 +45,7 @@
                 <a target="_blank" href="https://www.openstreetmap.org/copyright/pt-BR">© contribuidores do OpenStreetMap</a>
                 <a target="_blank" href="http://mapbox.com">MB</a>
             </div>
-            <div if="{ opts.big }"
-                 class="map-update-time">
+            <div v-if="big" class="map-update-time">
                 {{ $t('source') }}: <a target="_blank" href="http://orcamento.sf.prefeitura.sp.gov.br/orcamento/execucao.php">Secretaria de Finanças</a>
             </div>
         </div>
@@ -55,7 +54,6 @@
 </template>
 
 <script>
-// import HelloWorld from '@/components/HelloWorld.vue'
 import { mapState, mapActions } from 'vuex'
 import L from 'leaflet'
 import { LMap, LTileLayer, LMarker, LGeoJson } from 'vue2-leaflet'
@@ -76,6 +74,7 @@ export default {
     var self = this
     return {
       show: false,
+      categories: ['planejado', 'empenhado', 'liquidado'],
       zoom: 12,
       center: L.latLng(-23.58098, -46.61293),
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
@@ -98,6 +97,10 @@ export default {
     this.show = true
   },
   computed: {
+    // if the map should display big or not
+    big () {
+      return this.$route.name === 'home'
+    },
     geoJsons () {
       return [this.yearPoints]
     },
