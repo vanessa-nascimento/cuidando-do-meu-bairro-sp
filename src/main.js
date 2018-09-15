@@ -3,7 +3,7 @@ import i18n from './i18n'
 import { sync } from 'vuex-router-sync'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import store from './stores'
 import Assets from './assets'
 
 import 'leaflet/dist/leaflet.css'

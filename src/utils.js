@@ -1,3 +1,16 @@
+import axios from 'axios'
+import { cacheAdapterEnhancer, throttleAdapterEnhancer } from 'axios-extensions'
+
+// enhance the original axios adapter with throttle and cache enhancer
+export const http = axios.create({
+  headers: { 'Cache-Control': 'no-cache' },
+  adapter: throttleAdapterEnhancer(cacheAdapterEnhancer(axios.defaults.adapter))
+})
+
+export const httpNoHeaders = axios.create({
+  adapter: throttleAdapterEnhancer(cacheAdapterEnhancer(axios.defaults.adapter))
+})
+
 // Convert number to locale string
 export function format (number, opts) {
   // TODO: usar locale
