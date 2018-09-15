@@ -99,5 +99,11 @@
   "error_multipoint_ajax": "Erro ao tentar pegar informações sobre vários pontos",
   "error_mapstore_ajax": "Erro ao tentar pegar dados",
   "Comment reported": "Comentário reportado",
-  "comments_about": "{_num} comentário{s_num} sobre"
+  "comments_about": "{_num} comentário{s_num} sobre",
+  "planned": "planejado",
+  "committed": "empenhado",
+  "finished": "liquidado",
+  "planejado": "planejado",
+  "empenhado": "empenhado",
+  "liquidado": "liquidado"
 }

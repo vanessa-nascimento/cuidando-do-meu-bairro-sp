@@ -16,7 +16,7 @@
                 </button>
                 <router-link id="home-button"
                    class="navbar-brand"
-                   :to="{ name: 'home' }">
+                   to="/">
                     <img :src="$assets.logo">
                     <span class="beta-mark">BETA</span>
                 </router-link>
@@ -26,7 +26,7 @@
                  :class="{ collapse: true, 'navbar-collapse': true, in: isExpanded }">
                 <ul class="nav navbar-nav navbar-right">
                   <li>
-                    <router-link :to="{ name: 'about'}">About</router-link>
+                    <router-link :to="{ name: 'about'}">{{ $t('About') }}</router-link>
                   </li>
 
                   <li><a href="http://blog.cuidando.vc" target="_blank">Blog</a></li>
@@ -83,7 +83,6 @@ export default {
       return `http://www.facebook.com/sharer.php?u=${page}`
     },
     ...mapState({
-      // lang: state => state.route.query.lang,
       username: state => state.auth.username
     })
   },

@@ -7,9 +7,9 @@
                     {{ $t('description') }}
                     <span class="table-header-mark"/>
                 </th>
-                <th>{{ $t('planejado') }}</th>
-                <th>{{ $t('empenhado') }}</th>
-                <th>{{ $t('liquidado') }}</th>
+                <th>{{ $t('planned') }}</th>
+                <th>{{ $t('committed') }}</th>
+                <th>{{ $t('finished') }}</th>
                 <th class="text-left">{{ $t('body') }}</th>
             </tr>
             <tr v-for="(row, i) in pageData.data" :key="i">
@@ -31,27 +31,21 @@
         </table>
     </div>
     <div class="text-right table-controls">
-        <router-link :to="{params: { page: 0 }}"
-            v-if="currPage !== 0">
-            {{ $t('first') }}
-        </router-link>
-        <router-link v-for="(num, i) in pageIndexes" :key="i"
-            :to="{params: { page: num }}"
-            :class="{disabled: num == currPage }"
-            role="button">
-            {{ num }}
-        </router-link>
+        <router-link :to="{ params: { page: 0 } }"
+            v-if="currPage !== 0 && !pageIndexes.includes(0)">{{ $t('first') }}</router-link>
+        <router-link v-for="num in pageIndexes" :key="num"
+            :to="{ params: { page: num } }"
+            :class="{ disabled: num === currPage }"
+            role="button">{{ num + 1 }}</router-link>
         <router-link
-            :to="{params: { page: lastPage }}"
-            v-if="currPage !== lastPage">
-            {{ $t('last') }}
-        </router-link>
+            :to="{ params: { page: lastPage } }"
+            v-if="currPage !== lastPage && !pageIndexes.includes(lastPage)">{{ $t('last') }}</router-link>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import { formatCur } from '@/utils'
 export default {
   name: 'dynamic-table',
@@ -60,9 +54,6 @@ export default {
       // defaultPage: 1,
       per_page_num: 25
     }
-  },
-  mounted () {
-    this.getMoneyPage({ params: { year: this.year, page: this.currPage } })
   },
   computed: {
     lastPage () {
@@ -76,20 +67,19 @@ export default {
         .map((_, i) => i + this.currPage - Math.floor(numShownPages / 2))
         .filter(i => i >= 0 && i <= this.lastPage)
     },
+    currPage () {
+      return this.routePage !== undefined ? this.routePage : 1
+    },
     ...mapState({
       pageData: state => state.money.page,
-      year: state => state.route.params.year,
-      currPage: state => state.route.params.page
+      routePage: state => state.route.params.page
     })
   },
   methods: {
     formatCur,
     calcPlanejado (orcado, atualizado) {
       return atualizado || orcado
-    },
-    ...mapActions([
-      'getMoneyPage'
-    ])
+    }
   }
 }
 </script>

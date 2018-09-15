@@ -1,10 +1,14 @@
 <template>
   <div id="app">
     <main-menu/>
-    <keep-alive>
-      <router-view name="map"></router-view>
-    </keep-alive>
-    <router-view/>
+    <transition name="fade">
+      <keep-alive>
+        <router-view name="map"></router-view>
+      </keep-alive>
+    </transition>
+    <transition name="fade">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
@@ -21,6 +25,7 @@ export default {
       year: state => state.route.params.year,
       code: state => state.route.params.code,
       page: state => state.route.params.page,
+      username: state => state.route.params.username,
       pointInfo: state => state.money.pointInfo
     })
   },
@@ -30,27 +35,56 @@ export default {
       'getYearInfo',
       'getPointInfo',
       'getEmpenhos',
-      'getMoneyPage'
+      'getMoneyPage',
+      'getPedidos',
+      'getComments',
+      'getUserInfo'
     ])
   },
   watch: {
-    year (newValue, oldValue) {
-      this.getYearPoints({ params: { year: newValue } })
-      this.getYearInfo({ params: { year: newValue } })
+    year: {
+      handler (newValue, oldValue) {
+        if (newValue) {
+          this.getYearPoints({ params: { year: newValue } })
+          this.getYearInfo({ params: { year: newValue } })
+        }
+      },
+      immediate: true
     },
-    code (newValue, oldValue) {
-      if (newValue) this.getPointInfo({ params: { code: newValue } })
+    code: {
+      handler (newValue, oldValue) {
+        if (newValue) {
+          this.getPointInfo({ params: { code: newValue } })
+          this.getPedidos({ params: { key: newValue } })
+          this.getComments({ params: { key: newValue } })
+        }
+      },
+      immediate: true
+    },
+    username: {
+      handler (newValue, oldValue) {
+        if (newValue) this.getUserInfo({ params: { username: newValue } })
+      },
+      immediate: true
+    },
+    page: {
+      handler (newValue, oldValue) {
+        if (newValue) this.getMoneyPage({ params: { year: this.year, page: newValue } })
+      },
+      immediate: true
     },
     pointInfo (newValue, oldValue) {
       if (newValue) this.getEmpenhos({ params: { pointInfo: newValue } })
-    },
-    page (newValue, oldValue) {
-      console.log(newValue)
-      if (newValue) this.getMoneyPage({ params: { year: this.year, page: newValue } })
     }
   }
 }
 </script>
 
 <style lang="scss">
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 </style>

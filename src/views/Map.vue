@@ -1,9 +1,9 @@
 <template>
-  <div class="map">
+  <div :class="{ map: true, 'map-big': big }">
 
-    <year-select/>
+    <year-select v-if="big"/>
 
-    <div class="input-group search-address">
+    <div v-if="big" class="input-group search-address">
         <input id="search-address-input"
                class="input-medium search-query form-control"
                type="text"
@@ -19,43 +19,37 @@
         </span>
     </div>
 
-    <div id="bigmap-container">
-        <div id="map-parent-container" :class="{ 'map-big': big }">
-            <div v-if="show">
-              <p v-if="pending">Looooding</p>
-              <l-map ref="map" id="map-container" style="height: 600px" :zoom="zoom" :center="center">
-                <l-tile-layer :url="url" :attribution="attribution" :id="id" :accessToken="accessToken"></l-tile-layer>
-                <v-marker-cluster :options="markerClusterOptions">
-                  <l-geo-json :key="geoJson.features[0].properties.uid" v-for="geoJson in geoJsons" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
-                </v-marker-cluster>
-              </l-map>
-            </div>
-            <p v-else>...............</p>
+    <div id="map-parent-container" :class="{ 'map-big': big }">
+        <l-map ref="map" id="map-container" :zoom="zoom" :center="center">
+          <l-tile-layer :url="url" :attribution="attribution" :id="id" :accessToken="accessToken"></l-tile-layer>
+          <v-marker-cluster :options="markerClusterOptions">
+            <l-geo-json v-if="geoJson.features" :key="geoJson.features[0].properties.uid" v-for="geoJson in geoJsons" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
+          </v-marker-cluster>
+        </l-map>
 
-            <div v-if="big" class="map-legend-container">
-                <div class="map-legend">
-                    <b class="darker-text">{{ $t("Map legend") }}:</b>
-                    <div v-for="(cat, i) in categories" :key="i"
-                        class="capitalize map-category">
-                        <img :src="$assets[cat]">
-                        {{ $t(cat) }}
-                    </div>
+        <div v-if="big" class="map-legend-container">
+            <div class="map-legend">
+                <b class="darker-text">{{ $t("Map legend") }}:</b>
+                <div v-for="(cat, i) in categories" :key="i"
+                    class="capitalize map-category">
+                    <img :src="$assets[cat]">
+                    {{ $t(cat) }}
                 </div>
             </div>
-            <div class="map-attribution">
-                <a target="_blank" href="https://www.openstreetmap.org/copyright/pt-BR">© contribuidores do OpenStreetMap</a>
-                <a target="_blank" href="http://mapbox.com">MB</a>
-            </div>
-            <div v-if="big" class="map-update-time">
-                {{ $t('source') }}: <a target="_blank" href="http://orcamento.sf.prefeitura.sp.gov.br/orcamento/execucao.php">Secretaria de Finanças</a>
-            </div>
+        </div>
+        <div class="map-attribution">
+            <a target="_blank" href="https://www.openstreetmap.org/copyright/pt-BR">© contribuidores do OpenStreetMap</a>
+            <a target="_blank" href="http://mapbox.com">MB</a>
+        </div>
+        <div v-if="big" class="map-update-time">
+            {{ $t('source') }}: <a target="_blank" href="http://orcamento.sf.prefeitura.sp.gov.br/orcamento/execucao.php">Secretaria de Finanças</a>
         </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import L from 'leaflet'
 import axios from 'axios'
 import { LMap, LTileLayer, LMarker, LGeoJson } from 'vue2-leaflet'
@@ -99,7 +93,6 @@ export default {
     var self = this
     return {
       searchAddress: '',
-      show: false,
       categories: ['planejado', 'empenhado', 'liquidado'],
       zoom: 12,
       center: L.latLng(-23.58098, -46.61293),
@@ -124,9 +117,16 @@ export default {
       }
     }
   },
-  async mounted () {
-    await this.getYearPoints({ params: { year: this.year } })
-    this.show = true
+  mounted () {
+    // let self = this
+    // setInterval(
+    //   function () {
+    //     if (self.$refs && self.$refs.map) {
+    //       window.m = self.$refs.map.mapObject
+    //       self.$refs.map.mapObject.invalidateSize()
+    //       // this.$refs.map.mapObject.layerBase.redraw()
+    //     }
+    //   }, 10)
   },
   computed: {
     // if the map should display big or not
@@ -138,8 +138,7 @@ export default {
     },
     ...mapState({
       yearPoints: state => state.money.yearPoints,
-      pending: state => state.money.pending.yearPoints,
-      year: state => state.route.params.year
+      pending: state => state.money.pending.yearPoints
     })
   },
   methods: {
@@ -159,10 +158,7 @@ export default {
         // TODO erro
         // else msgs.addError('address_not_found')
       }
-    },
-    ...mapActions([
-      'getYearPoints'
-    ])
+    }
   }
 }
 </script>

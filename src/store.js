@@ -31,18 +31,26 @@ const auth = new Vapi({
   axios: http,
   baseURL: baseUrls.auth,
   state: {
-    username: null
+    username: null,
+    userInfo: null
   }
-// }).get({
-//   action: 'login',
-//   property: 'username',
-//   path: ({ year }) => `/minlist/${year}?state=1&capcor=1`,
-//   onSuccess: (state, payload, axios, { params }) => {
-//     state.yearPoints = {
-//       type: 'FeatureCollection',
-//       features: payload.data.FeatureColletion
-//     }
-//   }
+  // }).get({
+  //   action: 'login',
+  //   property: 'username',
+  //   path: ({ year }) => `/minlist/${year}?state=1&capcor=1`,
+  //   onSuccess: (state, payload, axios, { params }) => {
+  //     state.yearPoints = {
+  //       type: 'FeatureCollection',
+  //       features: payload.data.FeatureColletion
+  //     }
+  //   }
+}).get({
+  action: 'getUserInfo',
+  property: 'userInfo',
+  path: ({ username }) => `/users/${username}`,
+  onSuccess: (state, payload, axios, { params }) => {
+    state.userInfo = payload.data
+  }
 }).getStore()
 
 // Gastos Abertos
@@ -115,7 +123,32 @@ const esic = new Vapi({
   baseURL: baseUrls.esic,
   state: {
     orgaos: [],
-    updates: []
+    updates: [],
+    pedidos: [],
+    prepedidos: []
+  }
+}).get({
+  action: 'getPedidos',
+  path: ({ key }) => `/keywords/${key}`,
+  onSuccess (state, payload, axios) {
+    function pedidosCompare (a, b) {
+      let aDate = 0
+      let bDate = 0
+      if (a.history.length) aDate = a.history[0].date
+      else aDate = a.request_date
+      if (b.history.length) bDate = b.history[0].date
+      else bDate = b.request_date
+      return aDate < bDate ? 1 : -1
+    }
+    // Substitute strings for Dates
+    for (let pedido of payload.data.pedidos) {
+      if (pedido.request_date) pedido.request_date = new Date(pedido.request_date)
+      for (let message of pedido.history) {
+        message.date = new Date(message.date)
+      }
+    }
+    state.pedidos = payload.data.pedidos.sort(pedidosCompare)
+    state.prepedidos = payload.data.prepedidos || []
   }
 }).get({
   action: 'getOrgaos',
@@ -150,13 +183,14 @@ const comments = new Vapi({
   axios: http,
   baseURL: baseUrls.comments,
   state: {
-    updates: []
+    updates: [],
+    commentsPage: []
   }
 }).get({
   action: 'getCommentsUpdates',
   property: 'updates',
   path: `/comment`,
-  onSuccess: (state, payload, axios) => {
+  onSuccess (state, payload, axios) {
     // Substitute strings for Dates
     let updates = payload.data.comments
     for (let row of updates) {
@@ -166,7 +200,7 @@ const comments = new Vapi({
 
     let threads = []
     // TODO pegar infos sobre os pontos para mostrar os assuntos
-    // falta só arrumar o triggerChange
+    // falta só arrumar o triggerChange abaixo
     // Group comments by thread
     var threadsMap = updates.reduce((_threads, curr) => {
       if (_threads[curr.thread_name]) {
@@ -188,6 +222,26 @@ const comments = new Vapi({
     // this.triggerChange('multiPontinfo', {key: 'a', codes})
 
     state.updates = threads
+  }
+}).get({
+  action: 'getComments',
+  path: ({ key }) => `/thread/${key}`,
+  onSuccess (state, payload) {
+    function commentCompare (a, b) { return a.created < b.created ? 1 : -1 }
+    function orderComments (comments) {
+      // Substitute strings for Dates
+      for (let comment of comments) {
+        comment.created = new Date(comment.created)
+        comment.modified = new Date(comment.modified)
+      }
+      comments.sort(commentCompare)
+      for (let com of comments) {
+        if (com.replies) orderComments(com.replies)
+      }
+      return comments
+    }
+    orderComments(payload.data.comments)
+    state.commentsPage = payload.data
   }
 }).getStore()
 

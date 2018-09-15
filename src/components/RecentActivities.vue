@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="activities">
     <h3 class="subtitle">{{ $t('Recent Activities') }}</h3>
 
     <ul class="top-bar list-bare">

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="yearInfo" class="row">
+    <div v-if="yearInfo" class="row charts">
         <div class="col-lg-6 margin-bottom">
             <div class="inline-block donut-group not-mapped">
                 <labeled-doughnut :color="$assets.patNM" :percentage="perNotMapped"/>
@@ -18,7 +18,7 @@
                 <div v-for="(v, i) of values" :key="i" class="value-block">
                     <div class="icon-block">
                         <img :src="$assets[v.name]">
-                        <span class="capitalize">{{ $t(v.name) }}</span>
+                        <span class="capitalize block">{{ $t(v.name) }}</span>
                     </div>
                     <div class="bar-block">
                         <hor-bar :color="$assets.patNM"
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import { format } from '@/utils'
 import HorBar from '@/components/chart/HorBar.vue'
 import LabeledDoughnut from '@/components/chart/LabeledDoughnut.vue'
@@ -50,9 +50,9 @@ export default {
     HorBar,
     LabeledDoughnut
   },
-  mounted () {
-    this.getYearInfo({ params: { year: this.year } })
-  },
+  // mounted () {
+  //   this.getYearInfo({ params: { year: this.year } })
+  // },
   computed: {
     perMapped () {
       return Math.round(this.yearInfo.rows.mapped / this.yearInfo.rows.total * 100)
@@ -90,11 +90,6 @@ export default {
       yearInfo: state => state.money.yearInfo,
       year: state => state.route.params.year
     })
-  },
-  methods: {
-    ...mapActions([
-      'getYearInfo'
-    ])
   }
 }
 </script>
