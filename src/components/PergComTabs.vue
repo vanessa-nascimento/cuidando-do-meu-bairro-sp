@@ -19,7 +19,9 @@
     </div>
 
     <div class="container tabContent">
-      <component :is="currTabComponent"/>
+      <transition name="fade" mode="out-in">
+        <component :is="currTabComponent"/>
+      </transition>
     </div>
   </div>
 </template>
@@ -55,7 +57,7 @@ export default {
     },
     ...mapState({
       pedidos: state => state.esic.pedidos,
-      comments: state => state.comments.comments
+      comments: state => state.comments.commentsPage.comments
     })
   }
 }

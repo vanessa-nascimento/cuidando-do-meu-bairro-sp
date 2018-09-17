@@ -1,11 +1,13 @@
 import Vapi from 'vuex-rest-api'
 import { baseUrls } from '@/configs'
-import { http } from '@/utils'
+import { http, addToStore } from '@/utils'
+
+const baseURL = baseUrls.comments
 
 // Comments
-export default new Vapi({
+export default addToStore(new Vapi({
   axios: http,
-  baseURL: baseUrls.comments,
+  baseURL,
   state: {
     updates: [],
     commentsPage: []
@@ -67,4 +69,19 @@ export default new Vapi({
     orderComments(payload.data.comments)
     state.commentsPage = payload.data
   }
-}).getStore()
+}).getStore(),
+{
+  actions: {
+    async sendComment ({ dispatch, commit }, { key, text }) {
+      let url = `${baseURL}/thread/${key}`
+      let data = {
+        token: await dispatch('getMicroToken'),
+        text
+      }
+      let a = await http.get(url, { data })
+      console.log(a)
+      // TODO bypass cache!
+      return dispatch('getComments', key)
+    }
+  }
+})

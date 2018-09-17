@@ -12,12 +12,12 @@
                 rows="3"
                 maxlength="500"
                 v-model="text"
-                @focus="checkIsLogged"
+                @focus="requireLogin"
                 :placeholder="$t('Your comment')"/>
         </div>
         <button type="submit"
-                @click="sendComment"
-                class="btn btn-color-sec block-right relative">
+                @click.prevent="sendComment({ key: page.name, text })"
+                :class="['btn btn-color-sec block-right relative', { disabled: !text.length }]">
           <!-- <spinneror condition="sendCommentWaiting" scale="0.15"> -->
             {{ $t("Send comment") }}
           <!-- </spinneror> -->
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import CommentItem from '@/components/comments/CommentItem.vue'
 
 export default {
@@ -51,9 +51,11 @@ export default {
     })
   },
   methods: {
-    // TODO
-    checkIsLogged () {},
-    sendComment () {}
+    // sendComment () {}
+    ...mapActions([
+      'sendComment',
+      'requireLogin'
+    ])
   }
 }
 </script>

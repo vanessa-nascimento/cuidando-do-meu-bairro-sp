@@ -6,6 +6,8 @@ import esic from '@/stores/esic'
 import empenhos from '@/stores/empenhos'
 import comments from '@/stores/comments'
 import auth from '@/stores/auth'
+import msgs from '@/stores/msgs'
+import modal from '@/stores/modal'
 
 Vue.use(Vuex)
 
@@ -15,6 +17,8 @@ export default new Vuex.Store({
     esic,
     empenhos,
     comments,
-    auth
+    auth,
+    msgs,
+    modal
   }
 })

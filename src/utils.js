@@ -31,3 +31,16 @@ export function formatCur (number) {
     maximumFractionDigits: 2
   })
 }
+
+// Add to mainStore functions from extraStore.
+export function addToStore (mainStore, extraStore) {
+  for (let type in extraStore) {
+    let fs = extraStore[type]
+    if (!mainStore[type]) mainStore[type] = {}
+    for (let fname in fs) {
+      let f = fs[fname]
+      mainStore[type][fname] = f
+    }
+  }
+  return mainStore
+}

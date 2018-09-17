@@ -5,6 +5,8 @@ import App from './App.vue'
 import router from './router'
 import store from './stores'
 import Assets from './assets'
+import ModalBox from '@/components/ModalBox'
+import ButtonSpinner from '@/components/ButtonSpinner'
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
@@ -24,6 +26,8 @@ L.Icon.Default.mergeOptions({
 Vue.config.productionTip = false
 
 Vue.use(Assets)
+Vue.component('modal-box', ModalBox)
+Vue.component('button-spinner', ButtonSpinner)
 
 sync(store, router)
 

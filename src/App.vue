@@ -6,7 +6,7 @@
         <router-view name="map"></router-view>
       </keep-alive>
     </transition>
-    <transition name="fade">
+    <transition name="fade" mode="out-in">
       <router-view/>
     </transition>
   </div>
@@ -29,6 +29,9 @@ export default {
       pointInfo: state => state.money.pointInfo
     })
   },
+  mounted () {
+    this.loadPrevAuthData()
+  },
   methods: {
     ...mapActions([
       'getYearPoints',
@@ -38,7 +41,8 @@ export default {
       'getMoneyPage',
       'getPedidos',
       'getComments',
-      'getUserInfo'
+      'getUserInfo',
+      'loadPrevAuthData'
     ])
   },
   watch: {

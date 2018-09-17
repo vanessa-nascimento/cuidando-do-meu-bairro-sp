@@ -57,16 +57,23 @@
                 </ul>
             </div>
         </div>
+
+      <modal-box modal-id="login">
+          <login-form/>
+      </modal-box>
+
     </nav>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 import StyledSelect from '@/components/StyledSelect.vue'
+import LoginForm from '@/components/LoginForm.vue'
 export default {
   name: 'main-menu',
   components: {
-    StyledSelect
+    StyledSelect,
+    LoginForm
   },
   data () {
     return {
@@ -93,7 +100,7 @@ export default {
     openLoginModal (event) {
       this.closeExpanded()
       // TODO
-      // this['modal-login']._tag.openModal(event)
+      this.openModal('login')
     },
     selectedLang (lang) {
       this.closeExpanded()
@@ -104,8 +111,10 @@ export default {
     sendLogout () {
       this.closeExpanded()
       // TODO
-      // this.triggerChange('logout')
-    }
+      this.logout()
+    },
+    ...mapActions(['logout']),
+    ...mapMutations(['openModal'])
   }
 }
 </script>

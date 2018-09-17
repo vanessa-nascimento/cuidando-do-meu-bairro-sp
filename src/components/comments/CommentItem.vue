@@ -4,12 +4,12 @@
         <div class="comment-outer-row">
             <!-- Icon for top most comments -->
             <div v-if="top" class="comment-icon">
-                <img class="icon" src="$assets.aComTop">
+                <img class="icon" :src="$assets.aComTop">
             </div>
             <!-- Icon for replies to top most comments -->
             <div v-if="!top" class="comment-icon not-comment-top">
                 <div class="dot-bar"/>
-                <img class="icon vertical-center" src="$assets.aCom">
+                <img class="icon vertical-center" :src="$assets.aCom">
             </div>
 
             <div class="comment-row">
@@ -17,7 +17,7 @@
                     <div class="comment-text">
                         <!-- Comment content -->
                         <p v-if="!comment.hidden && !isEditting">
-                            {{ text }}
+                            {{ comment.text }}
                         </p>
 
                         <!-- Edit form -->
