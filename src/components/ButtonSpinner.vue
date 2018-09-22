@@ -1,7 +1,9 @@
 <template>
-  <button>
+  <button class="btn btn-color-sec relative" :disabled="condition">
     <spinner-anim v-if="condition"/>
-    <slot v-else/>
+    <span :class="{ transparent: condition }">
+      <slot/>
+    </span>
   </button>
 </template>
 

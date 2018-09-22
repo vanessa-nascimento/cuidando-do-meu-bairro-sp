@@ -6,32 +6,37 @@
 
     <div class="text-center modal-body">
 
+      <transition name="fade" mode="out-in">
         <!-- Error messages -->
         <p v-if="errorData" class="text-center msg error-msg">
           {{ $t(errorData.message) }}
         </p>
+      </transition>
 
+      <transition name="fade" mode="out-in">
         <p v-if="view === 'forgot2'">
-            {{ $t('login_form_use_reset_code', { minutes: exp_reset_code }) }}
+            {{ $t('login_form_use_reset_code', { minutes: expResetCode / 60 }) }}
         </p>
+      </transition>
 
         <form class="form">
 
-            <!-- Username -->
-            <div class="form-group">
-                <label class="sr-only"
-                        for="login-form-username">
-                    {{ $t('Username') }}
-                </label>
-                <input type="text"
-                        :class="['form-control', checkFieldError('username')]"
-                        id="login-form-username"
-                       ref="username"
-                       v-model="username"
-                       :placeholder="$t('Username')">
-            </div>
+          <!-- Username -->
+          <div class="form-group">
+              <label class="sr-only"
+                      for="login-form-username">
+                  {{ $t('Username') }}
+              </label>
+              <input type="text"
+                      :class="['form-control', checkFieldError('username')]"
+                      id="login-form-username"
+                      ref="username"
+                      v-model="username"
+                      :placeholder="$t('Username')">
+          </div>
 
-            <!-- Email -->
+          <!-- Email -->
+          <transition name="fade" mode="out-in">
             <div class="form-group"
                  v-if="view !== 'login'">
                 <label class="sr-only" for="login-form-email">
@@ -43,8 +48,10 @@
                        v-model="email"
                     :placeholder="$t('E-mail')">
             </div>
+          </transition>
 
-            <!-- Reset Code -->
+          <!-- Reset Code -->
+          <transition name="fade" mode="out-in">
             <div class="form-group"
                  v-if="view === 'forgot2'">
                 <label class="sr-only"
@@ -55,10 +62,13 @@
                         :class="['form-control', checkFieldError('code')]"
                         id="login-form-code"
                         autocomplete="off"
+                       v-model="code"
                         :placeholder="$t('Code')">
             </div>
+          </transition>
 
-            <!-- Password -->
+          <!-- Password -->
+          <transition name="fade" mode="out-in">
             <div class="form-group"
                  v-if="view !== 'forgot1'">
                 <label class="sr-only"
@@ -71,13 +81,15 @@
                        v-model="password"
                         :placeholder="$t('Password')">
             </div>
+          </transition>
 
-            <!-- Confirm Password -->
+          <!-- Confirm Password -->
+          <transition name="fade" mode="out-in">
             <div class="form-group"
                  v-if="view === 'register' || view === 'forgot2'">
                 <label class="sr-only"
                         for="login-form-confirm-password">
-                    {{ $t("Confirm Password") }}
+                    {{ $t('Confirm Password') }}
                 </label>
                 <input type="password"
                         :class="['form-control', checkFieldError('confirm-password')]"
@@ -85,55 +97,63 @@
                        v-model="passwordConf"
                         :placeholder="$t('Confirm Password')">
             </div>
+          </transition>
 
-            <!-- Request Login -->
+          <!-- Request Login -->
+          <transition name="fade" mode="out-in">
             <button-spinner
+              v-if="view === 'login'"
               type="submit"
-              :class="['btn btn-color-sec modal-button', disabledOnEmpty(username, password)]"
+              class="modal-button"
               @click.prevent.native="sendLogin"
               :condition="pending.username"
-              v-if="view === 'login'">
+              :disabled="anyEmpty(username, password)">
                 {{ $t('Login') }}
             </button-spinner>
 
             <!-- Request Register -->
             <button-spinner
+              v-if="view === 'register'"
               type="submit"
-              :class="['btn btn-color-sec modal-button', disabledOnEmpty(username, password, passwordConf, email)]"
+              class="modal-button"
               @click.prevent.native="sendRegister"
               :condition="pending.username"
-              v-if="view === 'register'">
-                {{ $t("Register") }}
+              :disabled="anyEmpty(username, password, passwordConf, email)">
+                {{ $t('Register') }}
             </button-spinner>
 
             <!-- Request Reset Code -->
             <button-spinner
+              v-if="view === 'forgot1'"
               type="submit"
-              class="btn btn-color-sec modal-button"
-              @click="forgotPassword"
-              v-if="view === 'forgot1'">
-              {{ $t("Request reset code") }}
+              class="modal-button"
+              @click.prevent.native="sendForgot"
+              :condition="pending.expResetCode"
+              :disabled="anyEmpty(username, email)">
+              {{ $t('Request reset code') }}
             </button-spinner>
 
             <!-- Request Reset -->
             <button-spinner
+              v-if="view === 'forgot2'"
               type="submit"
-              class="btn btn-color-sec modal-button"
-              @click="resetPassword"
-              v-if="view === 'forgot2'">
-              {{ $t("Change password and login") }}
+              class="modal-button"
+              @click.prevent.native="sendReset"
+              :disabled="anyEmpty(username, password, passwordConf, email, code)">
+              {{ $t('Change password and login') }}
             </button-spinner>
+          </transition>
         </form>
 
         <div>
           <a class="modal-anchor" @click="view = 'register'" v-if="view === 'login'">
-            {{ $t("Register") }}
+            {{ $t('Register') }}
           </a>
         </div>
 
         <div>
           <a class="modal-anchor" @click="view = 'forgot1'" v-if="view === 'login'">
-            {{ $t("Forgot password") }}
+            {{ $t('Forgot password') }}
           </a>
         </div>
     </div>
@@ -144,38 +164,42 @@
 import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
   name: 'login-form',
-  components: {
-  },
   data () {
     return {
       view: 'login',
       username: '',
       password: '',
       passwordConf: '',
+      code: '',
       email: ''
     }
   },
   computed: {
     ...mapState({
       pending: state => state.auth.pending,
+      expResetCode: state => state.auth.expResetCode,
       errorData: state => state.auth.errorData
     })
   },
   mounted () {
-    this.setAuthError(null)
+    this.clearError()
     this.$refs.username.focus()
   },
   methods: {
-    disabledOnEmpty (...args) {
+    anyEmpty (...args) {
       for (let arg of args) {
-        if (!arg.length) return 'disabled'
+        if (!arg.length) return true
       }
-      return ''
+      return false
+    },
+    clearError () {
+      this.setAuthError(null)
     },
     changeView (view, event) {
-      // this.clearError()
+      this.clearError()
       this.view = {}
       this.view[view] = true
+      // TODO precisa?
       // acme to avoid closing modal
       // if (event) event.ignoreEvent = true
     },
@@ -190,7 +214,7 @@ export default {
         this.closeModal()
       } catch (e) {}
     },
-    async sendRegister () {
+    async sendRegister (e) {
       if (this.password !== this.passwordConf) {
         this.setAuthError({ message: 'Different passwords', fields: ['password', 'confirm-password'] })
         return false
@@ -206,12 +230,35 @@ export default {
         this.closeModal()
       } catch (e) {}
     },
+    async sendForgot () {
+      try {
+        await this.forgotPassword({ data: { username: this.username, email: this.email } })
+        this.view = 'forgot2'
+        this.clearError()
+      } catch (e) {}
+    },
+    async sendReset () {
+      if (this.password !== this.passwordConf) {
+        this.setAuthError({ message: 'Different passwords', fields: ['password', 'confirm-password'] })
+        return false
+      }
+      try {
+        await this.resetPassword({
+          data: {
+            username: this.username,
+            password: this.password,
+            email: this.email,
+            code: this.code
+          }
+        })
+        this.closeModal()
+      } catch (e) {}
+    },
     ...mapActions([
       'resetPassword',
       'registerUser',
       'loginUser',
-      'forgotPassword',
-      'resetPassword'
+      'forgotPassword'
     ]),
     ...mapMutations(['closeModal', 'setAuthError'])
   }

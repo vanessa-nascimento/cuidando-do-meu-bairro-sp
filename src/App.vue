@@ -15,10 +15,12 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import MainMenu from '@/components/MainMenu.vue'
+import MsgShower from '@/components/MsgShower.vue'
 
 export default {
   components: {
-    MainMenu
+    MainMenu,
+    MsgShower
   },
   computed: {
     ...mapState({

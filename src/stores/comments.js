@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import Vapi from 'vuex-rest-api'
 import { baseUrls } from '@/configs'
 import { http, addToStore } from '@/utils'
@@ -10,7 +11,15 @@ export default addToStore(new Vapi({
   baseURL,
   state: {
     updates: [],
-    commentsPage: []
+    commentsPage: [],
+    pending: {
+      edit: {},
+      reply: {},
+      voteup: {},
+      delete: {},
+      report: {},
+      votedown: {}
+    }
   }
 }).get({
   action: 'getCommentsUpdates',
@@ -71,17 +80,92 @@ export default addToStore(new Vapi({
   }
 }).getStore(),
 {
+  mutations: {
+    setPending (state, { type, id }) {
+      Vue.set(state.pending[type], id, true)
+    },
+    unsetPending (state, { type, id }) {
+      Vue.set(state.pending[type], id, false)
+    }
+  },
   actions: {
+    async updateThread ({ rootState, dispatch, commit }) {
+      // TODO needed to bypass cache. improve?
+      console.log(rootState.route)
+      console.log(rootState.route.params.code)
+      let thread = rootState.route.params.code
+      let url = `${baseURL}/thread/${thread}`
+      await http.get(url, { forceUpdate: true })
+      return dispatch('getComments', { params: { key: thread } })
+    },
     async sendComment ({ dispatch, commit }, { key, text }) {
       let url = `${baseURL}/thread/${key}`
       let data = {
         token: await dispatch('getMicroToken'),
         text
       }
-      let a = await http.get(url, { data })
-      console.log(a)
-      // TODO bypass cache!
-      return dispatch('getComments', key)
+      commit('setPending', { type: 'reply', id: key })
+      await http.post(url, data)
+      commit('unsetPending', { type: 'reply', id: key })
+
+      dispatch('updateThread')
+    },
+    async sendDelete ({ dispatch, commit }, { url, id }) {
+      url = baseURL + url
+      let data = {
+        token: await dispatch('getMicroToken')
+      }
+      console.log(data)
+      commit('setPending', { type: 'delete', id })
+      await http.delete(url, { data })
+      commit('unsetPending', { type: 'delete', id })
+
+      dispatch('updateThread')
+    },
+    async sendReport ({ dispatch, commit }, { url, id }) {
+      url = baseURL + url
+      commit('setPending', { type: 'report', id })
+      await http.post(url)
+      commit('unsetPending', { type: 'report', id })
+
+      dispatch('updateThread')
+    },
+    async sendVote ({ dispatch, commit }, { url, id, vote }) {
+      url = baseURL + url
+      let data = {
+        token: await dispatch('getMicroToken'),
+        vote
+      }
+      commit('setPending', { type: 'vote', id })
+      await http.post(url, data)
+      commit('unsetPending', { type: 'vote', id })
+
+      dispatch('updateThread')
+    },
+    async sendReply ({ dispatch, commit }, { url, id, text }) {
+      url = baseURL + url
+      let data = {
+        token: await dispatch('getMicroToken'),
+        text
+      }
+      commit('setPending', { type: 'reply', id })
+      await http.post(url, data)
+      commit('unsetPending', { type: 'reply', id })
+
+      dispatch('updateThread')
+    },
+    async sendEdit ({ dispatch, commit }, { url, id, text }) {
+      url = baseURL + url
+      let data = {
+        token: await dispatch('getMicroToken'),
+        text
+      }
+      console.log(id)
+      commit('setPending', { type: 'edit', id })
+      await http.put(url, data)
+      commit('unsetPending', { type: 'edit', id })
+
+      dispatch('updateThread')
     }
   }
 })

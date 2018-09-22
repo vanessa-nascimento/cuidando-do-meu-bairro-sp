@@ -28,7 +28,7 @@ export default {
     options: Array,
     // Used to bind the displayed selected value
     // If not passed, use a variable internal to this component (internalSelectedValue)
-    selectedValue: [String, Number]
+    value: [String, Number]
   },
   data () {
     return {
@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     displayedValue () {
-      let key = this.selectedValue ? this.selectedValue : this.internalSelectedValue
+      let key = this.value ? this.value : this.internalSelectedValue
       for (let option of this.options) {
         if (option.key === key) return option.value
       }
@@ -61,7 +61,7 @@ export default {
     optionSelected (event) {
       this.internalSelectedValue = event.target.dataset.key
       this.open = false
-      this.$emit('change', this.internalSelectedValue)
+      this.$emit('input', this.internalSelectedValue)
     }
   }
 }

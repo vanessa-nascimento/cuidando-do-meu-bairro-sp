@@ -75,13 +75,23 @@ export default addToStore(new Vapi({
     saveTokens(state, payload.data)
   },
   onError: handleError
-// }).post({
-//   action: 'resetPassword',
-//   path: '/reset_password',
-//   onSuccess: async (state, payload, axios, { params }) => {
-//     //       data: {username: params.username, email: params.email},
-//     clearUserData()
-//   }
+}).post({
+  action: 'forgotPassword',
+  property: 'expResetCode',
+  path: '/reset_password',
+  onError: handleError,
+  onSuccess: async (state, payload) => {
+    state.expResetCode = payload.data.exp
+  }
+}).put({
+  action: 'resetPassword',
+  property: 'username',
+  path: '/reset_password',
+  onError: handleError,
+  onSuccess: async (state, payload) => {
+    saveTokens(state, payload.data)
+    // TODO limpar cache dos dados desse usuário para poder pegar dados completos
+  }
 }).getStore(),
 {
   mutations: {
@@ -117,15 +127,16 @@ export default addToStore(new Vapi({
         }
         console.log('auth:getMicroToken: renewing token with:', data)
         try {
-          let json = await http.post({ url, data })
-          console.log(json)
-          if (json) saveMicroToken(json)
+          let response = await http.post(url, data)
+          console.log('response', response)
+          if (response.data) saveMicroToken(response.data)
           else return null
         } catch (err) {
           dispatch('clearUserData')
           dispatch('addError', 'error_renew_token')
         }
       }
+      console.log('token:', localStorage.microToken)
       return localStorage.microToken
     },
     async logout ({ dispatch }) {

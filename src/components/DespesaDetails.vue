@@ -2,13 +2,13 @@
   <div>
     <div class="top-bar orgao-box">
         <span class="block-decorator"/>
-        <span class="key">{{ $t('Accountable body') }}:</span>
-        <span class="value">{{ pointInfo.orgao }}</span>
+        <span class="key">{{ $t('Accountable body') }}: </span>
+        <span class="value">{{ pointInfo.ds_orgao }}</span>
     </div>
 
     <ul class="list-bare top-bar bottom-bar despesa-details-list">
         <li v-for="el of mainKeys" :key="el[0]">
-            <span class="key">{{ el[0] }}:</span>
+            <span class="key">{{ el[0] }}: </span>
             <span>{{ el[1] }}</span>
         </li>
 
@@ -31,7 +31,7 @@
     <ul v-if="showAllInfo && pointInfo"
         class="list-bare bottom-bar despesa-details-list">
         <li v-for="key of keys" :key="key">
-            <span class="key">{{ key }}:</span>
+            <span class="key">{{ key }}: </span>
             <span>{{ pointInfo[key] }}</span>
         </li>
         <a v-if="showAllInfo"

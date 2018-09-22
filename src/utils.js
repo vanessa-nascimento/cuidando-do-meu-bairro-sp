@@ -11,6 +11,10 @@ export const httpNoHeaders = axios.create({
   adapter: throttleAdapterEnhancer(cacheAdapterEnhancer(axios.defaults.adapter))
 })
 
+export const httpNoCache = axios.create({
+  adapter: throttleAdapterEnhancer(axios.defaults.adapter)
+})
+
 // Convert number to locale string
 export function format (number, opts) {
   // TODO: usar locale

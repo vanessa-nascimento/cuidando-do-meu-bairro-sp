@@ -40,7 +40,7 @@ export default new Vapi({
   property: 'orgaos',
   path: `/orgaos`,
   onSuccess: (state, payload, axios) => {
-    state.years = payload.data.orgaos.sort().map((x) => { return { key: x, value: x } })
+    state.orgaos = payload.data.orgaos.sort().map((x) => { return { key: x, value: x } })
   }
 }).get({
   action: 'getPedidosUpdates',

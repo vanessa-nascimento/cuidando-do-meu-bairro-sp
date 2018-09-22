@@ -1,15 +1,11 @@
 <template>
-  <styled-select class="year-selector separated-caret" :options="options" :selected-value="parseInt(year)" @change="selected"/>
+  <styled-select class="year-selector separated-caret" :options="options" :value="parseInt(year)" @input="selected"/>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import StyledSelect from '@/components/StyledSelect.vue'
 export default {
   name: 'year-select',
-  components: {
-    StyledSelect
-  },
   computed: {
     options () {
       return this.years.map((x) => { return { key: x, value: x } })

@@ -15,13 +15,13 @@
                 @focus="requireLogin"
                 :placeholder="$t('Your comment')"/>
         </div>
-        <button type="submit"
-                @click.prevent="sendComment({ key: page.name, text })"
-                :class="['btn btn-color-sec block-right relative', { disabled: !text.length }]">
-          <!-- <spinneror condition="sendCommentWaiting" scale="0.15"> -->
+        <button-spinner type="submit"
+                @click.prevent.native="sendComment({ key: page.name, text })"
+                :disabled="!text.length"
+                :condition="pending.reply[page.name]"
+                class="block-right relative">
             {{ $t("Send comment") }}
-          <!-- </spinneror> -->
-        </button>
+        </button-spinner>
     </form>
 
     <div class="comments-block">
@@ -45,17 +45,10 @@ export default {
       text: ''
     }
   },
-  computed: {
-    ...mapState({
-      page: state => state.comments.commentsPage
-    })
-  },
-  methods: {
-    // sendComment () {}
-    ...mapActions([
-      'sendComment',
-      'requireLogin'
-    ])
-  }
+  computed: mapState({
+    page: state => state.comments.commentsPage,
+    pending: state => state.comments.pending
+  }),
+  methods: mapActions(['sendComment', 'requireLogin'])
 }
 </script>

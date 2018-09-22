@@ -13,7 +13,9 @@ export var assets = {
   aComTop: require('@/assets/activities/comments-top.svg'),
   aComExtra: require('@/assets/activities/comments-extra.svg'),
   aPer: require('@/assets/activities/pergunta.svg'),
-  // moedas: require('raw!../assets/moedas.svg'),
+  // "isvg" is used to avoid default svg loader
+  // eslint-disable-next-line
+  moedas: require('svg-inline-loader!@/assets/moedas.isvg'),
   patM: require('@/assets/patM.png'),
   patNM: require('@/assets/patNM.png')
 }

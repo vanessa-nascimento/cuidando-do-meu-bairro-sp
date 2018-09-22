@@ -24,21 +24,22 @@
                         <form class="form" v-if="isEditting">
                             <div class="form-group">
                                 <label class="sr-only"
-                                       :for="`comment-edit-textarea-${id}`">
-                                    { t('Edit comment') }
+                                       :for="`comment-edit-textarea-${comment.id}`">
+                                    {{ $t('Edit comment') }}
                                 </label>
-                                <textarea id="`comment-edit-textarea-${this.id}`"
-                                        class="form-control"
-                                        maxlength="500"
-                                        v-model="text"
-                                        rows="3"></textarea>
+                                <textarea
+                                  :id="`comment-edit-textarea-${comment.id}`"
+                                  class="form-control"
+                                  maxlength="500"
+                                  v-model="edit"
+                                  rows="3"/>
                             </div>
-                            <button type="submit"
-                                    @click="sendEdit"
-                                    class="btn btn-color-sec">
+                            <button-spinner
+                              type="submit"
+                              @click.prevent.native="sendEditAndClose"
+                              :condition="pending.edit[comment.id]">
                                 {{ $t('Save') }}
-                                <!-- <span v-if="sendEditWaiting" class="loading"/> -->
-                            </button>
+                            </button-spinner>
                         </form>
 
                         <p v-if="comment.hidden">{{ $t('Comment removed.') }}</p>
@@ -49,7 +50,7 @@
                         <span>{{ formatDate(comment.created) }}</span>
                         <br>
                         <span v-if="comment.created.getTime() !== comment.modified.getTime()">
-                            ({{ formatDate(modified) }})
+                            ({{ formatDate(comment.modified) }})
                             <br>
                         </span>
                         <span>+{{comment.upvotes}}/-{{comment.downvotes}}</span>
@@ -65,46 +66,55 @@
 
                 <!-- Control buttons -->
                 <div class="text-right control-buttons">
-                    <a onclick="{ openReplyArea }">
-                        {{ $t("reply") }}</a>
+                  <button class="btn btn-color-sec"
+                          @click="isReplying = true"
+                          @focus="requireLogin">
+                      {{ $t("reply") }}
+                    </button>
 
                     <!-- Author buttons -->
                     <div v-if="isAuthor && !comment.hidden"
                         class="inline">
-                        <a if="{ !isEditting }"
-                            onclick="{ openEditArea }">
-                            { t("edit") }</a>
-                        <a if="{ isEditting }"
-                            onclick="{ closeEditArea }">
-                            { t("Cancel") }</a>
-                        <a onclick="{ sendDelete }">
-                            { t("Delete") }
-                            <span if="{ sendDeleteWaiting }" class="loading"/>
-                        </a>
+                        <button v-if="!isEditting"
+                           class="btn btn-color-sec"
+                            @click="isEditting = true">
+                          {{ $t("edit") }}
+                        </button>
+                        <button v-if="isEditting"
+                           class="btn btn-warning"
+                            @click="isEditting = false">
+                          {{ $t("Cancel") }}
+                        </button>
+                        <button-spinner
+                          @click.prevent.native="sendDelete({ url: comment.url, id: comment.id })"
+                          :condition="pending.delete[comment.id]">
+                            {{ $t("Delete") }}
+                        </button-spinner>
                     </div>
 
                     <!-- Not Author buttons -->
                     <div v-if="!isAuthor"
                         class="inline">
-                        <a data-vote="up"
-                            @click="sendVote">
-                            +1
-                            <!-- <span if="{ sendVoteWaiting && upvotting }" -->
-                            <!--     class="loading"/> -->
-                        </a>
-                        <a data-vote="down"
-                                onclick="{ sendVote }">
-                            -1
-                            <!-- <span if="{ sendVoteWaiting && !upvotting }" -->
-                            <!--     class="loading"/> -->
-                        </a>
-                        <a class="dangerous-link"
-                                v-if="!comment.hidden"
-                                :title="$t('Report comment as inappropriate')"
-                                onclick="{ sendReport }">
-                            {{ $t('Report') }}
-                            <!-- <span if="{ sendReportWaiting }" class="loading"/> -->
-                        </a>
+                      <button-spinner
+                        @focus.native="requireLogin"
+                        :condition="pending.voteup[comment.id]"
+                        @click.prevent.native="sendVote({ url: comment.vote_url, id: comment.id, vote: true })">
+                          +1
+                      </button-spinner>
+                      <button-spinner
+                        @focus.native="requireLogin"
+                        :condition="pending.votedown[comment.id]"
+                        @click.prevent.native="sendVote({ url: comment.vote_url, id: comment.id, vote: false })">
+                          -1
+                      </button-spinner>
+                      <button-spinner
+                        class="dangerous-link"
+                        v-if="!comment.hidden"
+                        :title="$t('Report comment as inappropriate')"
+                        :condition="pending.report[comment.id]"
+                        @click.prevent.native="sendReport({ url: comment.report_url, id: comment.id })">
+                          {{ $t('Report') }}
+                      </button-spinner>
                     </div>
                 </div>
             </div>
@@ -112,39 +122,39 @@
 
         <div>
             <!-- Reply form -->
-            <form class="form"
-                  if="{ isReplying }">
+            <form class="form" v-if="isReplying">
                 <div class="form-group">
                     <label class="sr-only"
-                           for="comment-reply-textarea-{this.id}">
+                           for="comment-reply-textarea-{comment.id}">
                         {{ $t('Reply Comment') }}
                     </label>
-                    <textarea id="comment-reply-textarea-{this.id}"
-                              class="form-control"
-                              maxlength="500"
-                              rows="3"/>
+                    <textarea
+                      id="comment-reply-textarea-{comment.id}"
+                      class="form-control"
+                      maxlength="500"
+                      v-model="reply"
+                      rows="3"/>
                 </div>
-                <button type="submit"
-                        onclick="{ sendReply }"
+                <button-spinner type="submit"
+                        @click.prevent.native="sendReply({ url: comment.url, text: reply, id: comment.id })"
+                        :condition="pending.reply[comment.id]"
                         class="btn btn-color-sec">
                     {{ $t('Send') }}
-                    <!-- <span if="{ sendReplyWaiting }" class="loading"/> -->
-                </button>
-                <button class="btn btn-warning"
-                        onclick="{ closeReplyArea }">
+                </button-spinner>
+                <button class="btn btn-warning" @click.prevent.native="isReplying = false">
                     {{ $t('Cancel') }}
                 </button>
             </form>
         </div>
 
         <!-- Replies list -->
-        <comment v-for="(reply, i) in comment.replies" :key="i" style="margin: 20px;"/>
+        <comment-item v-for="(reply, i) in comment.replies" :key="i" style="margin: 20px;" :comment="reply"/>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { formatDate } from '@/utils'
 export default {
   name: 'comment-item',
@@ -155,12 +165,12 @@ export default {
       default: false
     }
   },
-  components: {
-  },
   data () {
     return {
       isEditting: false,
-      text: ''
+      isReplying: false,
+      edit: this.comment.text,
+      reply: ''
     }
   },
   computed: {
@@ -168,13 +178,24 @@ export default {
       return this.comment.author === this.username
     },
     ...mapState({
-      username: state => state.auth.username
+      username: state => state.auth.username,
+      pending: state => state.comments.pending
     })
   },
   methods: {
     formatDate,
-    // TODO
-    sendVote () {}
+    async sendEditAndClose () {
+      await this.sendEdit({ url: this.comment.url, text: this.edit, id: this.comment.id })
+      this.isEditting = false
+    },
+    ...mapActions([
+      'requireLogin',
+      'sendDelete',
+      'sendVote',
+      'sendEdit',
+      'sendReport',
+      'sendReply'
+    ])
   }
 }
 </script>

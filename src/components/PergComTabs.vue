@@ -39,8 +39,8 @@ export default {
   },
   data () {
     let tabs = [
-      { title: 'comments', component: 'comments-tab', countArray: 'comments' },
-      { title: 'questions', component: 'perguntas-tab', countArray: 'pedidos' }
+      { title: 'questions', component: 'perguntas-tab', countArray: 'pedidos' },
+      { title: 'comments', component: 'comments-tab', countArray: 'comments' }
     ]
     return {
       tabs,

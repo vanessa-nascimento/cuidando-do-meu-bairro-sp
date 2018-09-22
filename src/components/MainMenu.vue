@@ -52,7 +52,7 @@
                     </a></li>
 
                     <li>
-                        <styled-select :options="langs" :selected-value="$i18n.locale" @change="selectedLang"/>
+                        <styled-select :options="langs" :value="$i18n.locale" @input="selectedLang"/>
                     </li>
                 </ul>
             </div>
@@ -67,12 +67,10 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex'
-import StyledSelect from '@/components/StyledSelect.vue'
 import LoginForm from '@/components/LoginForm.vue'
 export default {
   name: 'main-menu',
   components: {
-    StyledSelect,
     LoginForm
   },
   data () {
