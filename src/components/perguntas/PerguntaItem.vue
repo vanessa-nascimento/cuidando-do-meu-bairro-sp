@@ -15,7 +15,7 @@
                     {{ pedido.request_date ? formatDate(pedido.request_date) : '' }}
                   </div>
                   <div class="col-xs-6">
-                      <router-link :to="{ name: 'pessoa', params: { username: pedido.author } }">
+                      <router-link :to="{ name: 'pessoa', params: { viewingUser: pedido.author } }">
                         {{ pedido.author }}
                       </router-link>
                   </div>
