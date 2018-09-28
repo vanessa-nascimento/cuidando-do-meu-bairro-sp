@@ -1,16 +1,20 @@
+import Vue from 'vue'
 import Vapi from 'vuex-rest-api'
 import { baseUrls } from '@/configs'
-import { http } from '@/utils'
+import { http, addToStore } from '@/utils'
+
+const baseURL = baseUrls.esic
 
 // EsicLivre
-export default new Vapi({
+export default addToStore(new Vapi({
   axios: http,
-  baseURL: baseUrls.esic,
+  baseURL,
   state: {
     orgaos: [],
     updates: [],
     pedidos: [],
-    prepedidos: []
+    prepedidos: [],
+    userPerguntas: []
   }
 }).get({
   action: 'getPedidos',
@@ -43,6 +47,13 @@ export default new Vapi({
     state.orgaos = payload.data.orgaos.sort().map((x) => { return { key: x, value: x } })
   }
 }).get({
+  action: 'getUserPerguntas',
+  property: 'userPerguntas',
+  path: ({ username }) => `/authors/${username}`,
+  onSuccess: (state, payload, axios) => {
+    state.userPerguntas = payload.data.pedidos.reverse()
+  }
+}).get({
   action: 'getPedidosUpdates',
   property: 'updates',
   path: `/messages`,
@@ -61,4 +72,59 @@ export default new Vapi({
     }
     state.updates = pedidos
   }
-}).getStore()
+}).getStore(),
+{
+  mutations: {
+    sendingPergunta (state) {
+      Vue.set(state.pending, 'sendingPergunta', true)
+    },
+    sentPergunta (state) {
+      Vue.set(state.pending, 'sendingPergunta', false)
+    }
+  },
+  actions: {
+    async updatePedidos ({ rootState, dispatch, commit }) {
+      // TODO needed to bypass cache. improve?
+      let key = rootState.route.params.code
+      let url = `${baseURL}/keywords/${key}`
+      await http.get(url, { forceUpdate: true })
+      return dispatch('getPedidos', { params: { key } })
+    },
+    async sendPergunta ({ dispatch, commit }, { keywords, orgao, text }) {
+      let url = `${baseURL}/pedidos`
+      let data = {
+        token: await dispatch('getMicroToken'),
+        text,
+        orgao,
+        keywords
+      }
+      commit('sendingPergunta')
+      try {
+        await http.post(url, data)
+        dispatch('addSuccess', 'Question sent')
+      } catch (err) {
+        dispatch('addError', 'error_send_question')
+      }
+      commit('sentPergunta')
+
+      dispatch('updatePedidos')
+    },
+    async sendRecurso ({ dispatch, commit }, { protocolo, text }) {
+      let url = `${baseURL}/recurso/{protocolo}`
+      let data = {
+        token: await dispatch('getMicroToken'),
+        text
+      }
+      commit('sendingPergunta')
+      try {
+        await http.post(url, data)
+        dispatch('addSuccess', 'Appeal sent')
+      } catch (err) {
+        dispatch('addError', 'error_send_question')
+      }
+      commit('sentPergunta')
+
+      dispatch('updatePedidos')
+    }
+  }
+})

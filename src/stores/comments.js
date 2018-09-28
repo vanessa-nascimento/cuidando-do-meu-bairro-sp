@@ -91,8 +91,6 @@ export default addToStore(new Vapi({
   actions: {
     async updateThread ({ rootState, dispatch, commit }) {
       // TODO needed to bypass cache. improve?
-      console.log(rootState.route)
-      console.log(rootState.route.params.code)
       let thread = rootState.route.params.code
       let url = `${baseURL}/thread/${thread}`
       await http.get(url, { forceUpdate: true })

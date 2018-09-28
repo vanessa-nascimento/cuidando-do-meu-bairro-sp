@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="about container">
     <h1>Cuidando do Meu Bairro</h1>
 
     <p>Este projeto ainda está em desenvolvimento, mas o código fonte dele pode ser encontrado aqui: <a href="http://repo.cuidando.vc" target="_blank">repositório</a>. E temos um <a href="http://blog.cuidando.vc" target="_blank">blog</a> também.</p>

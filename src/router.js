@@ -13,7 +13,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: `/${(new Date()).getFullYear()}`
+      redirect: `/${(new Date()).getFullYear()}/1`
     },
     {
       path: '/despesa/:year/:code',
@@ -24,7 +24,7 @@ export default new Router({
       }
     },
     {
-      path: '/pessoa/:username',
+      path: '/pessoa/:viewingUser',
       name: 'pessoa',
       component: Pessoa
     },

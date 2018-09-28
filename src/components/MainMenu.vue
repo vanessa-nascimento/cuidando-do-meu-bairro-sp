@@ -38,7 +38,7 @@
                     </li>
 
                     <li v-if="username">
-                        <router-link :to="{ name: 'pessoa', params: { username } }">
+                        <router-link :to="{ name: 'pessoa', params: { viewingUser: username } }">
                         {{ username }}
                         </router-link>
                     </li>
@@ -97,18 +97,14 @@ export default {
     },
     openLoginModal (event) {
       this.closeExpanded()
-      // TODO
       this.openModal('login')
     },
     selectedLang (lang) {
       this.closeExpanded()
       this.$i18n.locale = lang
-      // TODO route?
-      // this.triggerChange('lang', lang)
     },
     sendLogout () {
       this.closeExpanded()
-      // TODO
       this.logout()
     },
     ...mapActions(['logout']),

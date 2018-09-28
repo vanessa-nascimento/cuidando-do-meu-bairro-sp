@@ -24,7 +24,9 @@
                     <p>{{ $t('Remaining characters') }}: {{ remainingChars }}</p>
             </div>
             <button-spinner type="submit"
-                    @click.prevent.native="sendPedido"
+                    @click.prevent.native="send"
+                    :condition="pending.sendingPergunta"
+                    :disabled="!text.length"
                     class="btn btn-color-sec float-right relative">
                 {{ $t("Send") }}
             </button-spinner>
@@ -36,7 +38,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 export default {
   name: 'pergunta-form',
   async mounted () {
@@ -74,16 +76,25 @@ export default {
     },
     ...mapState({
       pointInfo: state => state.money.pointInfo,
+      pending: state => state.esic.pending,
       orgaos: state => state.esic.orgaos
     })
   },
   methods: {
-    // TODO
-    sendPedido () {},
+    async send () {
+      await this.sendPergunta({
+        keywords: [this.$route.params.code],
+        orgao: this.orgao,
+        text: this.inicioPergunta + ' ' + this.text
+      })
+      this.closeModal()
+    },
     ...mapActions([
       'getPointInfo',
+      'sendPergunta',
       'getOrgaos'
-    ])
+    ]),
+    ...mapMutations(['closeModal'])
   }
 }
 </script>

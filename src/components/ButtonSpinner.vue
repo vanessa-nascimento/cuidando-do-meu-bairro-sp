@@ -1,5 +1,5 @@
 <template>
-  <button class="btn btn-color-sec relative" :disabled="condition">
+  <button class="btn btn-color-sec relative" :disabled="condition || disabled">
     <spinner-anim v-if="condition"/>
     <span :class="{ transparent: condition }">
       <slot/>
@@ -15,7 +15,11 @@ export default {
     SpinnerAnim
   },
   props: {
-    condition: Boolean
+    condition: Boolean,
+    disabled: {
+      type: Boolean,
+      default: false
+    }
   }
 }
 </script>

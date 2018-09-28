@@ -1,6 +1,6 @@
 <template>
-  <ul class="list-bare">
-    <li v-for="(msg, i) in msgs" :key="i">
+  <transition-group tag="ul" name="fade" class="list-bare msg-shower">
+    <li v-for="msg in msgs" :key="msg.id">
       <div :class="['msg', `${msg.type}-msg`]">
           {{ $t(msg.text) }}
 
@@ -12,25 +12,16 @@
           </button>
       </div>
     </li>
-  </ul>
+  </transition-group>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'msg-shower',
-  components: {
-  },
-  computed: {
-    // msgList () {
-    //   return this.msgs.map((msg, i) => { msg, index: i })
-    // },
-    ...mapState({
-      msgs: state => state.msgs.msgs
-    })
-  },
-  methods: {
-    ...mapMutations(['removeMsgs'])
-  }
+  computed: mapState({
+    msgs: state => state.msgs.msgs
+  }),
+  methods: mapMutations(['removeMsg'])
 }
 </script>

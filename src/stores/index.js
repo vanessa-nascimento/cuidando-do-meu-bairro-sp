@@ -8,6 +8,7 @@ import comments from '@/stores/comments'
 import auth from '@/stores/auth'
 import msgs from '@/stores/msgs'
 import modal from '@/stores/modal'
+import subscriptions from '@/stores/subscriptions'
 
 Vue.use(Vuex)
 
@@ -19,6 +20,7 @@ export default new Vuex.Store({
     comments,
     auth,
     msgs,
-    modal
+    modal,
+    subscriptions
   }
 })

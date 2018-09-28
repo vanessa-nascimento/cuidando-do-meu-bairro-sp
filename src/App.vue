@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <main-menu/>
+    <msg-shower/>
     <transition name="fade">
       <keep-alive>
         <router-view name="map"></router-view>
@@ -27,7 +28,8 @@ export default {
       year: state => state.route.params.year,
       code: state => state.route.params.code,
       page: state => state.route.params.page,
-      username: state => state.route.params.username,
+      viewingUser: state => state.route.params.viewingUser,
+      username: state => state.auth.username,
       pointInfo: state => state.money.pointInfo
     })
   },
@@ -44,6 +46,9 @@ export default {
       'getPedidos',
       'getComments',
       'getUserInfo',
+      'getMyUserInfo',
+      'getUserPerguntas',
+      'getSubscriptions',
       'loadPrevAuthData'
     ])
   },
@@ -67,9 +72,28 @@ export default {
       },
       immediate: true
     },
+    viewingUser: {
+      handler (newValue, oldValue) {
+        if (newValue) {
+          this.getUserPerguntas({ params: { username: newValue } })
+          if (newValue === this.username) {
+            this.getMyUserInfo({ params: { username: newValue } })
+          } else {
+            this.getUserInfo({ params: { username: newValue } })
+          }
+        }
+      },
+      immediate: true
+    },
     username: {
       handler (newValue, oldValue) {
-        if (newValue) this.getUserInfo({ params: { username: newValue } })
+        if (newValue) {
+          this.getSubscriptions()
+          if (newValue === this.viewingUser) {
+            this.getMyUserInfo({ params: { username: newValue } })
+          }
+          // TODO else limpar userInfo? mas quando? não é sempre...
+        }
       },
       immediate: true
     },
@@ -88,9 +112,9 @@ export default {
 
 <style lang="scss">
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+    transition: opacity .5s;
 }
 .fade-enter, .fade-leave-to {
-  opacity: 0;
+    opacity: 0;
 }
 </style>

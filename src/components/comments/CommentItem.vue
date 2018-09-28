@@ -138,7 +138,7 @@
                 <button-spinner type="submit"
                         @click.prevent.native="sendReply({ url: comment.url, text: reply, id: comment.id })"
                         :condition="pending.reply[comment.id]"
-                        class="btn btn-color-sec">
+                        :disabled="!reply.length">
                     {{ $t('Send') }}
                 </button-spinner>
                 <button class="btn btn-warning" @click.prevent.native="isReplying = false">

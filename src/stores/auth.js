@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import decodeToken from 'jwt-decode'
 import Vapi from 'vuex-rest-api'
 import { baseUrls } from '@/configs'
@@ -50,7 +51,8 @@ export default addToStore(new Vapi({
   state: {
     username: null,
     userInfo: null,
-    errorData: null
+    errorData: null,
+    pending: {}
   }
 }).get({
   action: 'getUserInfo',
@@ -105,6 +107,12 @@ export default addToStore(new Vapi({
     },
     setAuthError (state, error) {
       state.errorData = error
+    },
+    setPendingAuth (state, { type }) {
+      Vue.set(state.pending, type, true)
+    },
+    unsetPendingAuth (state, { type }) {
+      Vue.set(state.pending, type, false)
     }
   },
   actions: {
@@ -119,16 +127,15 @@ export default addToStore(new Vapi({
 
       // Check if micro token is still valid for 30s
       if (now < localStorage.microTokenValidTime - 30000) {
-        console.log('auth:getMicroToken: no need to renew token')
+        // console.log('auth:getMicroToken: no need to renew token')
       } else {
         let url = `${baseURL}/renew_micro_token`
         let data = {
           token: localStorage.mainToken
         }
-        console.log('auth:getMicroToken: renewing token with:', data)
+        // console.log('auth:getMicroToken: renewing token with:', data)
         try {
           let response = await http.post(url, data)
-          console.log('response', response)
           if (response.data) saveMicroToken(response.data)
           else return null
         } catch (err) {
@@ -136,7 +143,6 @@ export default addToStore(new Vapi({
           dispatch('addError', 'error_renew_token')
         }
       }
-      console.log('token:', localStorage.microToken)
       return localStorage.microToken
     },
     async logout ({ dispatch }) {
@@ -157,48 +163,26 @@ export default addToStore(new Vapi({
       if (!state.username) {
         commit('openModal', 'login')
       }
+    },
+    async getMyUserInfo ({ state, dispatch, commit }, data) {
+      let url = `${baseURL}/users/${state.username}`
+      if (!data) data = {}
+      data.token = await dispatch('getMicroToken')
+      // TODO adaptar parte comentada
+      // commit('setPending', { type: 'delete', id })
+      try {
+        let response = await http.put(url, data)
+        state.userInfo = response.data
+      } catch (err) {
+        // dispatch('clearUserData')
+        // dispatch('addError', 'error_renew_token')
+      }
+      // commit('unsetPending', { type: 'delete', id })
+    },
+    async sendEditMyUserInfo ({ dispatch, commit }, data) {
+      commit('setPendingAuth', { type: 'sendEdit' })
+      await dispatch('getMyUserInfo', data)
+      commit('unsetPendingAuth', { type: 'sendEdit' })
     }
   }
 })
-
-// loadUsername ({ dispatch, commit }) {
-//   if (localStorage.mainToken) {
-//     var now = new Date()
-//     // Check if main token is still valid for 30s
-//     if (now < localStorage.mainTokenValidTime - 30000) {
-//       try {
-//         commit('setUsername', decodeToken(localStorage.mainToken).username)
-//       } catch (err) {
-//         dispatch('clearUserData')
-//         dispatch('addError', 'error_decode_token')
-//         return null
-//       }
-//     } else {
-//       // Clear tokens if main token is too old
-//       dispatch('clearUserData')
-//     }
-//   }
-//   return true
-// },
-
-//     async showErrorMessage(err) {
-//         let msg = JSON.parse((await err.response.json()).message)
-//         this.trigger(riot.SEC('authError'), msg)
-//     }
-
-//     async resetPassword(params) {
-//         try {
-//             this.saveTokens(await ajax({
-//                 url: api + "/reset_password",
-//                 data: {
-//                     username: params.username,
-//                     password: params.password,
-//                     email: params.email,
-//                     code: params.code
-//                 },
-//                 method: 'put',
-//             }))
-//         } catch(err) {
-//             await this.showErrorMessage(err)
-//         }
-//     }

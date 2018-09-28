@@ -1,48 +1,50 @@
 <template>
   <div>
     <div class="container-fluid light-dark-bg">
-        <div class="row">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12 padded-col">
-                        <router-link class="back-to-year" to="/">
-                            <span class="left-arrow"/>
-                            {{ $t('back to year') }}
-                        </router-link>
-                    </div>
+      <div class="row">
+        <div class="container">
+          <div class="row">
+              <div class="col-sm-12 padded-col">
+                  <router-link class="back-to-year" to="/">
+                      <span class="left-arrow"/>
+                      {{ $t('back to year') }}
+                  </router-link>
+              </div>
+          </div>
+          <div class="row relative">
+              <slot name="map"/>
+              <div id="minimap-container" class="col-md-4">
+                <div v-if="!pointInfo.geometry" class="not-mapped-msg-container">
+                  <div class="not-mapped-msg">
+                    {{ $t('Not mapped') }}
+                  </div>
                 </div>
-                <div class="row relative">
-                      <slot name="map"/>
-                    <div id="minimap-container" class="col-md-4">
-                        <!-- <div v-if="!this.pointInfo.geometry" -->
-                        <!--      class="not-mapped-msg-container"> -->
-                        <!--     <div class="not-mapped-msg"> -->
-                        <!--         {{ $t('Not mapped') }} -->
-                        <!--     </div> -->
-                        <!-- </div> -->
-                    </div>
+              </div>
 
-                </div>
+          </div>
 
-                <despesa-main/>
+          <despesa-main/>
 
-                <!-- <button type="submit" -->
-                <!--         if="{ !checkSubscribed(pointinfo.notification_id) }" -->
-                <!--         onclick="{ subscribeExpense }" -->
-                <!--         class="btn btn-color-sec block-right relative margin-bottom"> -->
-                <!--   <spinneror condition="subscribeWaiting" scale="0.15">{ t("Follow expense") }</spinneror> -->
-                <!-- </button> -->
-                <!-- <button type="submit" -->
-                <!--         if="{ checkSubscribed(pointinfo.notification_id) }" -->
-                <!--         onclick="{ unsubscribeExpense }" -->
-                <!--         class="btn btn-color-sec block-right relative margin-bottom"> -->
-                <!--   <spinneror condition="unsubscribeWaiting" scale="0.15">{ t("Unfollow expense") }</spinneror> -->
-                <!-- </button> -->
+          <!-- (un)follow expense -->
+          <button-spinner
+            type="submit" v-if="!subscriptions[pointInfo.notification_id]"
+            @click.prevent.native="subscribe({ tag: pointInfo.notification_id, author: pointInfo.notification_author })"
+            :condition="pending.subscribe[pointInfo.notification_id]"
+            class="block-right relative margin-bottom">
+            {{ $t("Follow expense") }}
+          </button-spinner>
+          <button-spinner
+            type="submit" v-else
+            @click.prevent.native="unsubscribe({ tag: pointInfo.notification_id })"
+            :condition="pending.unsubscribe[pointInfo.notification_id]"
+            class="block-right relative margin-bottom">
+            {{ $t("Unfollow expense") }}
+          </button-spinner>
 
-                <despesa-details/>
+          <despesa-details/>
 
-            </div>
         </div>
+      </div>
     </div>
 
     <perg-com-tabs/>
@@ -50,7 +52,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import DespesaDetails from '@/components/DespesaDetails.vue'
 import DespesaMain from '@/components/DespesaMain.vue'
 import PergComTabs from '@/components/PergComTabs.vue'
@@ -67,8 +69,14 @@ export default {
   },
   computed: {
     ...mapState({
+      subscriptions: state => state.subscriptions.subscriptions,
+      pending: state => state.subscriptions.pending,
+      pointInfo: state => state.money.pointInfo,
       code: state => state.route.params.code
     })
+  },
+  methods: {
+    ...mapActions(['unsubscribe', 'subscribe'])
   }
 }
 </script>

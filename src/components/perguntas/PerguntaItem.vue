@@ -23,29 +23,28 @@
           </div>
       </div>
 
-        <button @click="openNewRecursoForm"
-                v-if="pedido.allow_recurso && username == pedido.author"
-                class="btn btn-color-sec block-right margin-bottom">
+        <button
+          v-if="pedido.allow_recurso && username === pedido.author"
+          @click="openModal('recurso')"
+          class="btn btn-color-sec block-right margin-bottom">
           {{ $t('Appeal') }}
           <span class="right-arrow"/>
         </button>
 
-        <!-- <button type="submit" -->
-        <!--         v-if="!checkSubscribed(pedido.notification_id)" -->
-        <!--         @click="subscribe" -->
-        <!--         class="btn btn-color-sec block-right relative margin-bottom"> -->
-        <!--   <\!-- <spinneror condition="{ waitings[notification_id] && waitings[notification_id]['subscribeWaiting'] }" scale="0.15"> -\-> -->
-        <!--     {{ $t("Follow question") }} -->
-        <!--   <\!-- </spinneror> -\-> -->
-        <!-- </button> -->
-        <!-- <button type="submit" -->
-        <!--         v-else -->
-        <!--         @click="unsubscribe" -->
-        <!--         class="btn btn-color-sec block-right relative margin-bottom"> -->
-        <!--   <\!-- <spinneror condition="{ waitings[notification_id] && waitings[notification_id]['unsubscribeWaiting'] }" scale="0.15"> -\-> -->
-        <!--     { {$ t("Unfollow question") }} -->
-        <!--   <\!-- </spinneror> -\-> -->
-        <!-- </button> -->
+        <button-spinner
+          type="submit" v-if="!subscriptions[pedido.notification_id]"
+          @click.prevent.native="subscribe({ tag: pedido.notification_id, author: pedido.notification_author })"
+          :condition="pending.subscribe[pedido.notification_id]"
+          class="block-right relative margin-bottom">
+            {{ $t("Follow question") }}
+        </button-spinner>
+        <button-spinner
+          type="submit" v-else
+          @click.prevent.native="unsubscribe({ tag: pedido.notification_id })"
+          :condition="pending.unsubscribe[pedido.notification_id]"
+          class="block-right relative margin-bottom">
+            {{ $t("Unfollow question") }}
+        </button-spinner>
 
       <div class="text-right"
           v-if="!showRespostas">
@@ -90,7 +89,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 import { formatDate } from '@/utils'
 export default {
   name: 'pergunta-pedido',
@@ -106,11 +105,15 @@ export default {
   },
   computed: {
     ...mapState({
+      subscriptions: state => state.subscriptions.subscriptions,
+      pending: state => state.subscriptions.pending,
       username: state => state.auth.username
     })
   },
   methods: {
-    formatDate
+    formatDate,
+    ...mapMutations(['openModal']),
+    ...mapActions(['subscribe', 'unsubscribe'])
   }
 }
 </script>
