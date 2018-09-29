@@ -14,15 +14,13 @@
 
                 <!-- If is a thread update -->
                 <div v-if="activity.comments">
-                  <!-- TODO: _num abaixo -->
+                  <!-- TODO: _num abaixo (arrumar pluralização) -->
                     {{ $t('comments_about', {'_num': activity.comments.length}) }}
-                    <!--
-                    <a v-if="multiPontinfo"
+                    <a v-if="Object.keys(multiPontinfo).length"
                         class="clickable"
                         @click="routeDespesa(activity.thread_name)">
                         {{ multiPontinfo[activity.thread_name]['ds_projeto_atividade'] }}
                     </a>
-                    -->
                 </div>
 
                 <!-- If is a pedido update -->
@@ -68,10 +66,21 @@ export default {
   name: 'recent-activities',
   components: {
   },
-  mounted () {
+  async mounted () {
     this.getMoneyUpdates()
     this.getPedidosUpdates()
-    this.getCommentsUpdates()
+    await this.getCommentsUpdates()
+    let threadsMap = this.threads.reduce((threads, curr) => {
+      if (threads[curr.thread_name]) {
+        threads[curr.thread_name].push(curr)
+      } else {
+        let comments = [curr]
+        threads[curr.thread_name] = comments
+      }
+      return threads
+    }, {})
+    let codes = Object.keys(threadsMap)
+    this.getMultiPointInfo({ data: { codes } })
   },
   computed: {
     activities () {
@@ -80,7 +89,8 @@ export default {
     ...mapState({
       money: state => state.money.updates,
       pedidos: state => state.esic.updates,
-      threads: state => state.comments.updates
+      threads: state => state.comments.updates,
+      multiPontinfo: state => state.money.multiPontinfo
     })
   },
   methods: {
@@ -109,7 +119,8 @@ export default {
     ...mapActions([
       'getMoneyUpdates',
       'getPedidosUpdates',
-      'getCommentsUpdates'
+      'getCommentsUpdates',
+      'getMultiPointInfo'
     ])
   }
 }

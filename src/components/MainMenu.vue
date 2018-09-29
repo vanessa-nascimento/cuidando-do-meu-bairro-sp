@@ -52,7 +52,7 @@
                     </a></li>
 
                     <li>
-                        <styled-select :options="langs" :value="$i18n.locale" @input="selectedLang"/>
+                      <styled-select :options="langs" :value="$i18n.locale" @input="selectedLang"/>
                     </li>
                 </ul>
             </div>

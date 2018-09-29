@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="comment">
     <div class="top-bar">
         <div class="comment-outer-row">
             <!-- Icon for top most comments -->

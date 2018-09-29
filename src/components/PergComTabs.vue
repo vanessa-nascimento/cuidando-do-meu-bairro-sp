@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="perg-com-tabs">
     <div class="container-fluid light-dark-bg">
       <div class="row tabs-row">
         <div class="container">

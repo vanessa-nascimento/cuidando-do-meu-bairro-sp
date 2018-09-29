@@ -12,7 +12,8 @@ export default new Vapi({
     yearInfo: null,
     pointInfo: {},
     updates: [],
-    page: {}
+    page: {},
+    multiPontinfo: {}
   }
 }).get({
   action: 'getYearPoints',
@@ -69,5 +70,16 @@ export default new Vapi({
       row.date = new Date(row.date)
     }
     state.updates = payload.data.data
+  }
+}).post({
+  action: 'getMultiPointInfo',
+  property: 'multiPointInfo',
+  path: `/list`,
+  onSuccess: (state, payload, axios) => {
+    let dict = {}
+    for (let i of payload.data.data) {
+      dict[i.code] = i
+    }
+    state.multiPontinfo = dict
   }
 }).getStore()

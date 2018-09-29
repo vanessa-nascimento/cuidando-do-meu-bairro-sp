@@ -16,7 +16,7 @@
                 :placeholder="$t('Your comment')"/>
         </div>
         <button-spinner type="submit"
-                @click.prevent.native="sendComment({ key: page.name, text })"
+                @click.prevent.native="_sendComment({ key: page.name, text })"
                 :disabled="!text.length"
                 :condition="pending.reply[page.name]"
                 class="block-right relative">
@@ -49,6 +49,13 @@ export default {
     page: state => state.comments.commentsPage,
     pending: state => state.comments.pending
   }),
-  methods: mapActions(['sendComment', 'requireLogin'])
+  methods: {
+    async _sendComment (data) {
+      await this.sendComment(data)
+      // TODO: só remover o texto se não der erro
+      this.text = ''
+    },
+    ...mapActions(['sendComment', 'requireLogin'])
+  }
 }
 </script>
