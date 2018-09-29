@@ -19,9 +19,15 @@ export default new Vapi({
   property: 'yearPoints',
   path: ({ year }) => `/minlist/${year}?state=1&capcor=1`,
   onSuccess: (state, payload, axios, { params }) => {
-    state.yearPoints = {
-      type: 'FeatureCollection',
-      features: payload.data.FeatureColletion
+    // Avoid state update if same data. This avoids map recreation.
+    if (!state.yearPoints.features ||
+        (payload.data.FeatureColletion[0].properties.uid !==
+         state.yearPoints.features[0].properties.uid)
+    ) {
+      state.yearPoints = {
+        type: 'FeatureCollection',
+        features: payload.data.FeatureColletion
+      }
     }
   }
 }).get({

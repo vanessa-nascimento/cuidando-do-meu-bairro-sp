@@ -2,14 +2,20 @@
   <div id="app">
     <main-menu/>
     <msg-shower/>
-    <transition name="fade">
-      <keep-alive>
-        <router-view name="map"></router-view>
-      </keep-alive>
-    </transition>
-    <transition name="fade" mode="out-in">
-      <router-view/>
-    </transition>
+      <transition name="fade" mode="out-in">
+        <keep-alive>
+            <!-- <router-view name="map"></router-view> -->
+            <map-despesas v-if="routeName === 'despesa' || routeName === 'home'"/>
+        </keep-alive>
+      </transition>
+      <transition name="fade" mode="out-in">
+            <!-- <keep-alive> -->
+          <router-view>
+                <!-- <router-view name="map"></router-view> -->
+                <!-- <map-despesas/> -->
+          </router-view>
+            <!-- </keep-alive> -->
+      </transition>
   </div>
 </template>
 
@@ -17,20 +23,23 @@
 import { mapState, mapActions } from 'vuex'
 import MainMenu from '@/components/MainMenu.vue'
 import MsgShower from '@/components/MsgShower.vue'
+import MapDespesas from '@/components/MapDespesas.vue'
 
 export default {
   components: {
     MainMenu,
-    MsgShower
+    MsgShower,
+    MapDespesas
   },
   computed: {
     ...mapState({
+      routeName: state => state.route.name,
       year: state => state.route.params.year,
       code: state => state.route.params.code,
       page: state => state.route.params.page,
-      viewingUser: state => state.route.params.viewingUser,
       username: state => state.auth.username,
-      pointInfo: state => state.money.pointInfo
+      pointInfo: state => state.money.pointInfo,
+      viewingUser: state => state.route.params.viewingUser
     })
   },
   mounted () {

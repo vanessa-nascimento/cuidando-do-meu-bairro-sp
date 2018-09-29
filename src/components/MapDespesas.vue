@@ -1,6 +1,12 @@
 <template>
   <div :class="{ map: true, 'map-big': big }">
 
+    <div v-if="!pointInfo.geometry && !big" class="not-mapped-msg-container">
+      <div class="not-mapped-msg">
+        {{ $t('Not mapped') }}
+      </div>
+    </div>
+
     <year-select v-if="big"/>
 
     <div v-if="big" class="input-group search-address">
@@ -30,7 +36,7 @@
         <div v-if="big" class="map-legend-container">
             <div class="map-legend">
                 <b class="darker-text">{{ $t("Map legend") }}:</b>
-                <div v-for="(cat, i) in categories" :key="i"
+                <div v-for="cat in categories" :key="cat"
                     class="capitalize map-category">
                     <img :src="$assets[cat]">
                     {{ $t(cat) }}
@@ -49,7 +55,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import L from 'leaflet'
 import axios from 'axios'
 import { LMap, LTileLayer, LMarker, LGeoJson } from 'vue2-leaflet'
@@ -92,10 +98,10 @@ export default {
   data () {
     var self = this
     return {
+      center: L.latLng(-23.58098, -46.61293),
+      zoom: 12,
       searchAddress: '',
       categories: ['planejado', 'empenhado', 'liquidado'],
-      zoom: 12,
-      center: L.latLng(-23.58098, -46.61293),
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       // url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
@@ -118,6 +124,7 @@ export default {
     }
   },
   mounted () {
+    // console.log('MOUNTING!!!!!!!')
     // let self = this
     // setInterval(
     //   function () {
@@ -131,13 +138,15 @@ export default {
   computed: {
     // if the map should display big or not
     big () {
-      return this.$route.name === 'home'
+      return this.routeName === 'home'
     },
     geoJsons () {
       return [this.yearPoints]
     },
     ...mapState({
+      routeName: state => state.route.name,
       yearPoints: state => state.money.yearPoints,
+      pointInfo: state => state.money.pointInfo,
       pending: state => state.money.pending.yearPoints
     })
   },
@@ -152,12 +161,24 @@ export default {
       let query = '?format=json&limit=1&countrycodes=br&viewbox=-47.16,-23.36,-45.97,-23.98&bounded=1'
       let url = base + this.searchAddress + query
       let json = (await axios.get(url)).data
-
       if (json) {
         if (json.length) this.$refs.map.mapObject.setView([json[0].lat, json[0].lon], 16)
-        // TODO erro
-        // else msgs.addError('address_not_found')
+        else this.addError('address_not_found')
       }
+    },
+    ...mapActions(['addError'])
+  },
+  watch: {
+    pointInfo (newValue) {
+      let pointInfo = newValue
+      if (pointInfo && pointInfo.geometry) {
+        let c = pointInfo.geometry.coordinates
+        let l = L.latLng([c[1], c[0]])
+        this.$refs.map.mapObject.flyTo(l, 18)
+      }
+    },
+    routeName (newValue) {
+      this.$refs.map.mapObject.flyTo(this.center, this.zoom)
     }
   }
 }

@@ -4,26 +4,16 @@
       <div class="row">
         <div class="container">
           <div class="row">
-              <div class="col-sm-12 padded-col">
-                  <router-link class="back-to-year" to="/">
-                      <span class="left-arrow"/>
-                      {{ $t('back to year') }}
-                  </router-link>
-              </div>
+            <div class="col-sm-12 padded-col">
+              <router-link class="back-to-year" :to="{ name: 'home', params: { year } }">
+                <span class="left-arrow"/>
+                {{ $t('back to year') }}
+              </router-link>
+            </div>
           </div>
           <div class="row relative">
-              <slot name="map"/>
-              <div id="minimap-container" class="col-md-4">
-                <div v-if="!pointInfo.geometry" class="not-mapped-msg-container">
-                  <div class="not-mapped-msg">
-                    {{ $t('Not mapped') }}
-                  </div>
-                </div>
-              </div>
-
+            <despesa-main/>
           </div>
-
-          <despesa-main/>
 
           <!-- (un)follow expense -->
           <button-spinner
@@ -72,7 +62,8 @@ export default {
       subscriptions: state => state.subscriptions.subscriptions,
       pending: state => state.subscriptions.pending,
       pointInfo: state => state.money.pointInfo,
-      code: state => state.route.params.code
+      code: state => state.route.params.code,
+      year: state => state.route.params.year
     })
   },
   methods: {

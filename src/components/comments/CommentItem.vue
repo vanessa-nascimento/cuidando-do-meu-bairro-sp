@@ -58,7 +58,7 @@
 
                     <!-- Comment Author -->
                     <div class="comment-author">
-                        <router-link :to="{ name: 'pessoa', params: { username: comment.author} }">
+                        <router-link :to="{ name: 'pessoa', params: { viewingUser: comment.author} }">
                             {{ comment.author }}
                         </router-link>
                     </div>

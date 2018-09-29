@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import Map from './views/Map.vue'
+import MapDespesas from './components/MapDespesas.vue'
 import Despesa from './views/Despesa.vue'
 import Pessoa from './views/Pessoa.vue'
 
@@ -20,7 +20,7 @@ export default new Router({
       name: 'despesa',
       components: {
         default: Despesa,
-        map: Map
+        map: MapDespesas
       }
     },
     {
@@ -42,7 +42,7 @@ export default new Router({
       name: 'home',
       components: {
         default: Home,
-        map: Map
+        map: MapDespesas
       }
     }
   ]

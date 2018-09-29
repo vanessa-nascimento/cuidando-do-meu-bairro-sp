@@ -1,20 +1,18 @@
 <template>
   <div>
-    <div class="col-md-8">
-        <div class="row">
-            <div class="col-sm-12">
-                <h2>{{ $t('Program') }}: {{ this.pointInfo.ds_programa }}</h2>
-                <h2>{{ $t('Expense') }}: {{ this.pointInfo.ds_projeto_atividade }}</h2>
-                <!-- <spinner class="dark-spinner" if="{ !this.pointInfo }" scale="0.25"/> -->
-            </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>{{ $t('Program') }}: {{ this.pointInfo.ds_programa }}</h2>
+            <h2>{{ $t('Expense') }}: {{ this.pointInfo.ds_projeto_atividade }}</h2>
+            <!-- <spinner class="dark-spinner" if="{ !this.pointInfo }" scale="0.25"/> -->
         </div>
+    </div>
 
-        <div v-if="this.pointInfo" class="row">
-            <div v-for="(cat, i) in categories" :key="i" class="col-sm-4 category">
-                <div class="subtitle">{{ $t(cat) }}</div>
-                <span :class="['moedas', cat]" v-html="$assets.moedas"/>
-                <div v-if="values[cat] !== undefined" class="value">R$ {{ formatCur(values[cat]) }}</div>
-            </div>
+    <div v-if="this.pointInfo" class="row">
+        <div v-for="(cat, i) in categories" :key="i" class="col-sm-4 category">
+            <div class="subtitle">{{ $t(cat) }}</div>
+            <span :class="['moedas', cat]" v-html="$assets.moedas"/>
+            <div v-if="values[cat] !== undefined" class="value">R$ {{ formatCur(values[cat]) }}</div>
         </div>
     </div>
 
