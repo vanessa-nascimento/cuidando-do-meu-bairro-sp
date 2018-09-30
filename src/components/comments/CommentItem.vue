@@ -136,7 +136,7 @@
                       rows="3"/>
                 </div>
                 <button-spinner type="submit"
-                        @click.prevent.native="sendReply({ url: comment.url, text: reply, id: comment.id })"
+                        @click.prevent.native="_sendReply({ url: comment.url, text: reply, id: comment.id })"
                         :condition="pending.reply[comment.id]"
                         :disabled="!reply.length">
                     {{ $t('Send') }}
@@ -187,6 +187,12 @@ export default {
     async sendEditAndClose () {
       await this.sendEdit({ url: this.comment.url, text: this.edit, id: this.comment.id })
       this.isEditting = false
+    },
+    _sendReply (data) {
+      this.sendReply(data)
+      // TODO: só remover o texto e fechar caixa se não der erro
+      this.isReplying = false
+      this.reply = ''
     },
     ...mapActions([
       'requireLogin',
