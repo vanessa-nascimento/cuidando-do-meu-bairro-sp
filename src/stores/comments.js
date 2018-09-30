@@ -158,7 +158,6 @@ export default addToStore(new Vapi({
         token: await dispatch('getMicroToken'),
         text
       }
-      console.log(id)
       commit('setPending', { type: 'edit', id })
       await http.put(url, data)
       commit('unsetPending', { type: 'edit', id })

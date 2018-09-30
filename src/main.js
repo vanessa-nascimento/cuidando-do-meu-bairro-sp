@@ -11,7 +11,6 @@ import StyledSelect from '@/components/StyledSelect.vue'
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
-// import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import '@/css/app.sass'
 
 import L from 'leaflet'
