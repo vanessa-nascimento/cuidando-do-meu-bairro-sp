@@ -27,7 +27,7 @@
 
     <div id="map-parent-container" :class="{ 'map-big': big }">
         <l-map ref="map" id="map-container" :zoom="zoom" :center="center">
-          <l-tile-layer :url="url" :attribution="attribution" :id="id" :accessToken="accessToken"></l-tile-layer>
+          <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <v-marker-cluster :options="markerClusterOptions">
             <l-geo-json v-if="geoJson.features" :key="geoJson.features[0].properties.uid" v-for="geoJson in geoJsons" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
           </v-marker-cluster>
@@ -102,11 +102,12 @@ export default {
       zoom: 12,
       searchAddress: '',
       categories: ['planejado', 'empenhado', 'liquidado'],
-      url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+      // url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       // url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
+      // id: 'cuidando.nlj83mlb',
+      // accessToken: 'pk.eyJ1IjoiY3VpZGFuZG8iLCJhIjoiY2lmandrYmEzNDBqbml1bHhlZzZtbWc0MSJ9.TZYl7sV3NHwSx5fk8JHqQg',
+      url: 'https://api.tiles.mapbox.com/v4/cuidando.nlj83mlb/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY3VpZGFuZG8iLCJhIjoiY2lmandrYmEzNDBqbml1bHhlZzZtbWc0MSJ9.TZYl7sV3NHwSx5fk8JHqQg',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      id: 'cuidando.nlj83mlb',
-      accessToken: 'pk.eyJ1IjoiY3VpZGFuZG8iLCJhIjoiY2lmandrYmEzNDBqbml1bHhlZzZtbWc0MSJ9.TZYl7sV3NHwSx5fk8JHqQg',
       markerClusterOptions: {
         maxClusterRadius: 100,
         spiderfyOnMaxZoom: true,
