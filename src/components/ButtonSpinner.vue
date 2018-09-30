@@ -8,12 +8,8 @@
 </template>
 
 <script>
-import SpinnerAnim from '@/components/SpinnerAnim'
 export default {
   name: 'button-spinner',
-  components: {
-    SpinnerAnim
-  },
   props: {
     condition: Boolean,
     disabled: {

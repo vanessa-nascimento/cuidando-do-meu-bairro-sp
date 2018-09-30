@@ -1,11 +1,19 @@
 <template>
   <div :class="{ map: true, 'map-big': big }">
 
-    <div v-if="!pointInfo.geometry && !big" class="not-mapped-msg-container">
+    <div
+      v-if="(pointInfo.code && !pointInfo.geometry) && !big"
+      class="not-mapped-msg-container">
       <div class="not-mapped-msg">
         {{ $t('Not mapped') }}
       </div>
     </div>
+
+    <transition name="fade">
+      <div v-if="pending" class="spinner-overlay">
+          <spinner-anim scale="1"/>
+      </div>
+    </transition>
 
     <year-select v-if="big"/>
 
@@ -29,7 +37,12 @@
         <l-map ref="map" id="map-container" :zoom="zoom" :center="center">
           <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
           <v-marker-cluster :options="markerClusterOptions">
-            <l-geo-json v-if="geoJson.features" :key="geoJson.features[0].properties.uid" v-for="geoJson in geoJsons" :geojson="geoJson" :options="geoJsonOptions"></l-geo-json>
+            <l-geo-json
+              v-if="geoJson.features"
+              :key="geoJson.features[0].properties.uid"
+              v-for="geoJson in geoJsons"
+              :geojson="geoJson"
+              :options="geoJsonOptions"/>
           </v-marker-cluster>
         </l-map>
 
@@ -44,11 +57,13 @@
             </div>
         </div>
         <div class="map-attribution">
-            <a target="_blank" href="https://www.openstreetmap.org/copyright/pt-BR">© contribuidores do OpenStreetMap</a>
-            <a target="_blank" href="http://mapbox.com">MB</a>
+          <a target="_blank" href="https://www.openstreetmap.org/copyright/pt-BR">
+            © contribuidores do OpenStreetMap
+          </a>
+          <a target="_blank" href="http://mapbox.com">MB</a>
         </div>
         <div v-if="big" class="map-update-time">
-            {{ $t('source') }}: <a target="_blank" href="http://orcamento.sf.prefeitura.sp.gov.br/orcamento/execucao.php">Secretaria de Finanças</a>
+          {{ $t('source') }}: <a target="_blank" href="http://orcamento.sf.prefeitura.sp.gov.br/orcamento/execucao.php">Secretaria de Finanças</a>
         </div>
     </div>
   </div>

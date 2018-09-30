@@ -8,6 +8,7 @@ import Assets from './assets'
 import ModalBox from '@/components/ModalBox'
 import ButtonSpinner from '@/components/ButtonSpinner'
 import StyledSelect from '@/components/StyledSelect.vue'
+import SpinnerAnim from '@/components/SpinnerAnim'
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
@@ -29,6 +30,7 @@ Vue.use(Assets)
 Vue.component('modal-box', ModalBox)
 Vue.component('button-spinner', ButtonSpinner)
 Vue.component('styled-select', StyledSelect)
+Vue.component('spinner-anim', SpinnerAnim)
 
 sync(store, router)
 
