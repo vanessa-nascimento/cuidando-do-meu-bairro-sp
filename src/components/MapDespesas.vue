@@ -123,18 +123,6 @@ export default {
       }
     }
   },
-  mounted () {
-    // console.log('MOUNTING!!!!!!!')
-    // let self = this
-    // setInterval(
-    //   function () {
-    //     if (self.$refs && self.$refs.map) {
-    //       window.m = self.$refs.map.mapObject
-    //       self.$refs.map.mapObject.invalidateSize()
-    //       // this.$refs.map.mapObject.layerBase.redraw()
-    //     }
-    //   }, 10)
-  },
   computed: {
     // if the map should display big or not
     big () {

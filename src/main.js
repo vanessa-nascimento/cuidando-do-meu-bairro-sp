@@ -32,13 +32,6 @@ Vue.component('styled-select', StyledSelect)
 
 sync(store, router)
 
-// store.subscribe((mutation, state) => {
-//   console.log(mutation.type)
-//   console.log(mutation.payload)
-//   if (mutation.type == 'route/ROUTE_CHANGED')
-//     console.log(store.route.params)
-// })
-
 new Vue({
   router,
   store,

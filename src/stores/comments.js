@@ -113,7 +113,6 @@ export default addToStore(new Vapi({
       let data = {
         token: await dispatch('getMicroToken')
       }
-      console.log(data)
       commit('setPending', { type: 'delete', id })
       await http.delete(url, { data })
       commit('unsetPending', { type: 'delete', id })
