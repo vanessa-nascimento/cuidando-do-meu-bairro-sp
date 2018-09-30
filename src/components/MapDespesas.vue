@@ -144,6 +144,13 @@ export default {
       this.$refs.map.mapObject.panTo(event.latlng)
       this.$router.push({ name: 'despesa', params: { code } })
     },
+    zoomToPointInfo (pointInfo) {
+      if (pointInfo && pointInfo.geometry) {
+        let c = pointInfo.geometry.coordinates
+        let l = L.latLng([c[1], c[0]])
+        this.$refs.map.mapObject.flyTo(l, 18)
+      }
+    },
     async locateAddress () {
       let base = 'https://nominatim.openstreetmap.org/search/'
       let query = '?format=json&limit=1&countrycodes=br&viewbox=-47.16,-23.36,-45.97,-23.98&bounded=1'
@@ -158,15 +165,11 @@ export default {
   },
   watch: {
     pointInfo (newValue) {
-      let pointInfo = newValue
-      if (pointInfo && pointInfo.geometry) {
-        let c = pointInfo.geometry.coordinates
-        let l = L.latLng([c[1], c[0]])
-        this.$refs.map.mapObject.flyTo(l, 18)
-      }
+      this.zoomToPointInfo(newValue)
     },
     routeName (newValue) {
-      this.$refs.map.mapObject.flyTo(this.center, this.zoom)
+      if (newValue === 'home') this.$refs.map.mapObject.flyTo(this.center, this.zoom)
+      else if (newValue === 'despesa') this.zoomToPointInfo(this.pointInfo)
     }
   }
 }
