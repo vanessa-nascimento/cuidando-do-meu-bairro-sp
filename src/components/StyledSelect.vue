@@ -46,15 +46,6 @@ export default {
   methods: {
     toggleList () {
       this.open = !this.open
-      // TODO: migrar do riot
-      // if (this.open) {
-      //   onClickedOutside(this.root, () => {
-      //     this.open = false
-      //     this.update()
-      //   })
-      // } else {
-      //   onClickedOutside()
-      // }
     },
     close () {
       this.open = false
