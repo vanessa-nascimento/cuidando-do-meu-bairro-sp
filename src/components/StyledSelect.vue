@@ -1,5 +1,5 @@
 <template>
-  <div class="styled-select">
+  <div class="styled-select" v-click-outside="close">
     <div class="inner"
          @click="toggleList"
          :aria-expanded="open"
@@ -20,8 +20,6 @@
 </template>
 
 <script>
-// import {onClickedOutside} from '../utils/helpers'
-
 export default {
   name: 'styled-select',
   props: {
@@ -57,6 +55,9 @@ export default {
       // } else {
       //   onClickedOutside()
       // }
+    },
+    close () {
+      this.open = false
     },
     optionSelected (event) {
       this.internalSelectedValue = event.target.dataset.key

@@ -32,6 +32,23 @@ Vue.component('button-spinner', ButtonSpinner)
 Vue.component('styled-select', StyledSelect)
 Vue.component('spinner-anim', SpinnerAnim)
 
+// Allows calling function when clicked outside of an element
+// Usefull for modal and styled select
+Vue.directive('click-outside', {
+  bind: function (el, binding, vnode) {
+    el.clickOutsideEvent = function (event) {
+      if (!(el === event.target || el.contains(event.target))) {
+        console.log(vnode, binding, event)
+        vnode.context[binding.expression](event)
+      }
+    }
+    document.body.addEventListener('click', el.clickOutsideEvent)
+  },
+  unbind: function (el) {
+    document.body.removeEventListener('click', el.clickOutsideEvent)
+  }
+})
+
 sync(store, router)
 
 new Vue({
