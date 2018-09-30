@@ -14,8 +14,7 @@
 
                 <!-- If is a thread update -->
                 <div v-if="activity.comments">
-                  <!-- TODO: _num abaixo (arrumar pluralização) -->
-                    {{ $t('comments_about', {'_num': activity.comments.length}) }}
+                  {{ $tc('comments_about', activity.comments.length, {count: activity.comments.length}) }}
                     <a v-if="Object.keys(multiPontinfo).length"
                         class="clickable"
                         @click="routeDespesa(activity.thread_name)">

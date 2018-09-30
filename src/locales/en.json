@@ -15,5 +15,5 @@
   "error_send_question": "Error to send question",
   "error_multipoint_ajax": "Error to get multiple point info",
   "error_mapstore_ajax": "Error to get data",
-  "comments_about": "{_num} comment{s_num} about"
+  "comments_about": "one comment about | {count} comments about"
 }
