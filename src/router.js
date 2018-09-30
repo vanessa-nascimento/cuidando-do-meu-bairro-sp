@@ -7,7 +7,7 @@ import Pessoa from './views/Pessoa.vue'
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -47,3 +47,15 @@ export default new Router({
     }
   ]
 })
+
+// Used to redirect legacy routes (domain/?/path/to/route -> domain/path/to/route)
+router.beforeEach((to, from, next) => {
+  let decoded = decodeURIComponent(to.fullPath)
+  if (decoded.startsWith('/?/')) {
+    next({ path: decoded.slice(2).split('?')[0] })
+  } else {
+    next()
+  }
+})
+
+export default router
