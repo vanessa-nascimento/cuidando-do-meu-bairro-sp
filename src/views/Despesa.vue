@@ -18,6 +18,7 @@
           <!-- (un)follow expense -->
           <button-spinner
             type="submit" v-if="!subscriptions[pointInfo.notification_id]"
+            @focus.native="requireLogin"
             @click.prevent.native="subscribe({ tag: pointInfo.notification_id, author: pointInfo.notification_author })"
             :condition="pending.subscribe[pointInfo.notification_id]"
             class="block-right relative margin-bottom">
@@ -67,7 +68,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['unsubscribe', 'subscribe'])
+    ...mapActions(['unsubscribe', 'subscribe', 'requireLogin'])
   }
 }
 </script>
