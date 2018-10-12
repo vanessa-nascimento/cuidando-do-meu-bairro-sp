@@ -106,5 +106,8 @@
   "finished": "liquidado",
   "planejado": "planejado",
   "empenhado": "empenhado",
-  "liquidado": "liquidado"
+  "liquidado": "liquidado",
+  "day": "dia",
+  "month": "mês",
+  "year": "ano"
 }

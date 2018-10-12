@@ -14,7 +14,8 @@ export default addToStore(new Vapi({
     updates: [],
     pedidos: [],
     prepedidos: [],
-    userPerguntas: []
+    userPerguntas: [],
+    stats: {}
   }
 }).get({
   action: 'getPedidos',
@@ -46,6 +47,10 @@ export default addToStore(new Vapi({
   onSuccess: (state, payload, axios) => {
     state.orgaos = payload.data.orgaos.sort().map((x) => { return { key: x, value: x } })
   }
+}).get({
+  action: 'getEsicStats',
+  property: 'stats',
+  path: ({ grouping }) => `/stats/${grouping}`
 }).get({
   action: 'getUserPerguntas',
   property: 'userPerguntas',

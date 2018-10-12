@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import i18n from '@/i18n'
+import VueApexCharts from 'vue-apexcharts'
 import { sync } from 'vuex-router-sync'
 import App from '@/App.vue'
 import router from '@/router'
@@ -27,6 +28,7 @@ L.Icon.Default.mergeOptions({
 Vue.config.productionTip = false
 
 Vue.use(Assets)
+Vue.use(VueApexCharts)
 Vue.component('modal-box', ModalBox)
 Vue.component('button-spinner', ButtonSpinner)
 Vue.component('styled-select', StyledSelect)
