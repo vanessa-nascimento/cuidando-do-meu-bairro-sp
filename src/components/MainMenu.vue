@@ -30,7 +30,7 @@
                   </li>
 
                   <li>
-                    <router-link :to="{ name: 'analises'}">{{ $t('Analises') }}</router-link>
+                    <router-link :to="{ name: 'analises'}">{{ $t('Analysis') }}</router-link>
                   </li>
 
                   <li><a href="http://blog.cuidando.vc" target="_blank">Blog</a></li>
