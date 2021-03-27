@@ -64,7 +64,6 @@
         <a target="_blank" href="https://www.openstreetmap.org/copyright/pt-BR">
           © contribuidores do OpenStreetMap
         </a>
-        <a target="_blank" href="http://mapbox.com">MB</a>
       </div>
       <div v-if="big" class="map-update-time">
         {{ $t("source") }}:
@@ -131,7 +130,7 @@ export default {
       // id: 'cuidando.nlj83mlb',
       // accessToken: 'pk.eyJ1IjoiY3VpZGFuZG8iLCJhIjoiY2lmandrYmEzNDBqbml1bHhlZzZtbWc0MSJ9.TZYl7sV3NHwSx5fk8JHqQg',
       // url: 'https://api.tiles.mapbox.com/v4/cuidando.nlj83mlb/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY3VpZGFuZG8iLCJhIjoiY2lmandrYmEzNDBqbml1bHhlZzZtbWc0MSJ9.TZYl7sV3NHwSx5fk8JHqQg',
-      url: "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+      url: "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       markerClusterOptions: {

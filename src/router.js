@@ -13,7 +13,7 @@ let router = new Router({
   routes: [
     {
       path: '/',
-      redirect: `/${(new Date()).getFullYear()}/1`
+      redirect: `/2020/1`
     },
     {
       path: '/despesa/:year/:code',
