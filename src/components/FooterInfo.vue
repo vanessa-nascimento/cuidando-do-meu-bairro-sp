@@ -11,12 +11,12 @@
           <router-link class="mr-5 underline text-white text-xs hover:text-secondary-light hover:bg-opacity-80 hover:rounded" to="/termos-de-uso">
             Termos de Uso
           </router-link>
-          <router-link class="mr-5 underline text-white text-xs hover:text-secondary-light hover:bg-opacity-80 hover:rounded" to="/termos-de-uso">
+          <a class="mr-5 underline text-white text-xs hover:text-secondary-light hover:bg-opacity-80 hover:rounded" href="https://gitlab.com/cuidandodomeubairro">
             Gitlab
-          </router-link>
-          <router-link class="mr-5 underline text-white text-xs hover:text-secondary-light hover:bg-opacity-80 hover:rounded" to="/termos-de-uso">
+          </a>
+          <a class="mr-5 underline text-white text-xs hover:text-secondary-light hover:bg-opacity-80 hover:rounded" href="mailto:ola@cuidando.vc">
             E-mail
-          </router-link>
+          </a>
         </div>
         <div>
           <img :src="$assets.cc" class="w-20 inline-block" alt="Cuidando do Meu Bairro" />

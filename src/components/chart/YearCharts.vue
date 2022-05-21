@@ -103,7 +103,6 @@ export default {
   }
   canvas.donut {
     position: absolute;
-    z-index: -1;
   }
   .canvas-text {
     display: table-cell;
