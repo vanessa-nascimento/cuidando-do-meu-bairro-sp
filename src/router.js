@@ -13,7 +13,7 @@ let router = new Router({
   routes: [
     {
       path: '/',
-      redirect: `/2020/1`
+      redirect: `/2022/1`
     },
     {
       path: '/despesa/:year/:code',
@@ -29,13 +29,14 @@ let router = new Router({
       component: Pessoa
     },
     {
-      path: '/sobre',
-      name: 'about',
-      // components: About
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
+      path: "/sobre",
+      name: "Sobre",
+      component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue'),
+    },
+    {
+      path: "/termos-de-uso",
+      name: "Termos de Uso",
+      component: () => import(/* webpackChunkName: "about" */ '@/views/TermsOfUse.vue'),
     },
     {
       path: '/analises',
