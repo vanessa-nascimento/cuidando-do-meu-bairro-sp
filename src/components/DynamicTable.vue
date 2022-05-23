@@ -31,7 +31,7 @@
                         </router-link>
                       </td>
                       <td class="text-sm text-neutral-base font-light px-6 py-4 whitespace-nowrap">
-                        {{ formatCur(calcPlanejado(row.sld_orcado_ano, row.vl_atualizado)) }}
+                        {{ formatCur(calcPlanejado((row.sld_orcado_ano ? row.sld_orcado_ano : row.vl_orcado_ano), row.vl_atualizado)) }}
                       </td>
                       <td class="text-sm text-neutral-base font-light px-6 py-4 whitespace-nowrap">
                         {{ formatCur(row.vl_empenhadoliquido) }}
