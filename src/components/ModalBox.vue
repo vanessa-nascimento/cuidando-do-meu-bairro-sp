@@ -3,7 +3,7 @@
     <div v-if="openModal">
       <div class="modal-backdrop bg-black opacity-70 z-1 top-0 bottom-0 left-0 right-0 fixed"/>
       <div
-        class="modal z-1000 top-0 bottom-0 left-0 right-0 fixed w-full md:inset-0 h-modal md:h-full"
+        class="modal z-1000 bottom-0 left-0 right-0 fixed w-full md:inset-0 md:top-8 h-modal md:h-full"
         tabindex="-1"
         role="dialog"
         aria-labelledby="myModalLabel"

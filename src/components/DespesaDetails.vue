@@ -24,7 +24,7 @@
         
         <p class="text-neutral-base font-semibold mt-8">Contratos</p>
          <p class="text-neutral-light mb-3">Quer saber mais sobre o processo de contratos desta despesa?</p>
-        <a class="text-secondary-base underline" href="http://transparencia.prefeitura.sp.gov.br/contas/Paginas/Contratos-v2.aspx" target="_blank">Pesquise contratos</a>
+        <a class="text-secondary-base underline" href="http://transparencia.prefeitura.sp.gov.br/contratos-convenios-e-compras-publicas/#tipo" target="_blank">Pesquise contratos</a>
         
     </div>
     <div class="c-despesa-details__code-information my-10">
