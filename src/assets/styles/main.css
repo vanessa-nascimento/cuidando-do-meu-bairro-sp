@@ -5,3 +5,15 @@ body,
   height: 100%;
   margin: 0;
 }
+
+.c-map .scroll-year-select {
+  width: 11rem;
+}
+
+.scroll-year-select {
+  width: 90%;
+}
+
+.btn-select-year .scroll-year-select {
+  width: 7rem;
+}

@@ -50,7 +50,7 @@
           </div>
           <div class="c-map__year-submit grid grid-cols-2 gap-4">
             <div>
-              <year-select />
+              <year-select class="w-44" />
             </div>
             <div>
               <button class="btn w-full h-full border-2 hover:bg-primary-dark font-medium text-xs leading-tight uppercase rounded border-primary-base hover:border-primary-dark bg-primary-base text-white focus:outline-none focus:ring-0 transition duration-150 ease-in-out" type="button" @click="locateAddress">Buscar</button>

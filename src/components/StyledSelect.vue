@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <button 
-      class="text-neutral-base bg-transparent border border-neutral-base font-medium rounded text-sm px-4 py-4 text-center inline-flex items-center justify-between"
+      class="text-neutral-base bg-transparent border border-neutral-base font-medium rounded text-sm px-4 py-4 text-center inline-flex items-center justify-between w-full"
       type="button"
       data-dropdown-toggle="dropdownYear"
       v-click-outside="close"
@@ -14,7 +14,7 @@
       </svg>
     </button>
 
-    <div v-if="open" class="absolute z-10 h-52 overflow-scroll scroll-smooth bg-white divide-y divide-gray-100 rounded shadow">
+    <div v-if="open" class="scroll-year-select absolute z-10 h-52 overflow-scroll scroll-smooth bg-white divide-y divide-gray-100 rounded shadow">
       <ul class="py-1 text-sm text-gray-700">
         <li 
           v-for="option of options"
