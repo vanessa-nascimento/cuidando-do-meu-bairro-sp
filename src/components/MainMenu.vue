@@ -28,6 +28,9 @@
                 <router-link class="p-4 mx-1 hover:py-2 hover:bg-primary-dark hover:bg-opacity-80 hover:rounded" to="/sobre">{{ $t('About') }}</router-link>
               </li>
               <li>
+                <router-link class="p-4 mx-1 hover:py-2 hover:bg-primary-dark hover:bg-opacity-80 hover:rounded" to="/glossario">Glossário</router-link>
+              </li>
+              <li>
                 <router-link class="p-4 mx-1 hover:py-2 hover:bg-primary-dark hover:bg-opacity-80 hover:rounded" to="/analises">{{ $t('Analysis') }}</router-link>
               </li>
               <li>

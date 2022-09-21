@@ -34,6 +34,11 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue'),
     },
     {
+      path: "/glossario",
+      name: "Glossário - Orçamento Público",
+      component: () => import(/* webpackChunkName: "about" */ '@/views/Glossario.vue'),
+    },
+    {
       path: "/termos-de-uso",
       name: "Termos de Uso",
       component: () => import(/* webpackChunkName: "about" */ '@/views/TermsOfUse.vue'),

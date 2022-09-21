@@ -18,7 +18,34 @@
         <span class="hidden fill-status-planejado fill-status-empenhado fill-status-liquidado"></span>
         <div v-for="(category, i) in categories" :key="i" class="flex justify-center items-center">
           <div class="col-sm-4 shadow-sm category px-16 py-7 rounded-full bg-white">
-            <div class="c-despesa-main__category-title text-neutral-base uppercase font-bold mb-4">{{ $t(category) }}</div>
+            <div v-if="category !== 'empenhado'" class="c-despesa-main__category-title text-neutral-base uppercase font-bold mb-4"> {{$t(category) }}</div>
+            <div v-else class="c-despesa-main__category-title text-neutral-base uppercase font-bold mb-4"> {{$t(category) }}
+              <span>
+                <popper trigger="hover"
+                :options="{
+                  placement: 'top',
+                  modifiers: { offset: { offset: '0,10px' } }
+                }">
+                  <div class="popper absolute">
+                    Este valor corresponde a uma obrigação de pagamento da despesa pelo governo. Ele realiza a reserva do valor para que seja pago assim que o serviço prestado seja concluído e/ou o produto seja entregue ao poder público.
+                  </div>
+              
+                  <svg slot="reference" class=" w-4 h-4 inline-block"
+                  fill="none"
+                  stroke="#333"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                </popper>
+              </span>
+            </div>
             <span :class="['c-despesa-main__category-icon', 'fill-status-'+category]" v-html="$assets.moedas" />
             <div v-if="values[category] !== undefined" class="c-despesa-main__category-value text-neutral-base uppercase font-bold mt-4 text-lg">R$ {{ formatCur(values[category]) }}</div>
           </div>
@@ -39,8 +66,14 @@
 <script>
 import { mapState } from 'vuex'
 import { formatCur } from '@/utils'
+import Popper from 'vue-popperjs';
+import 'vue-popperjs/dist/vue-popper.css';
+
 export default {
   name: 'despesa-main',
+  components: {
+    'popper': Popper
+  },
   data () {
     return {
       categories: ['planejado', 'empenhado', 'liquidado']
